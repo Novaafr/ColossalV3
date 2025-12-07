@@ -29,15 +29,14 @@ namespace Colossal.Menu
         public List<GameObject> uiElements = new List<GameObject>();
 
         public Text MenuText;
-        public MenuOption[] CurrentViewingMenu { get; private set; } // Add this to store the menu options per panel
+        public MenuOption[] CurrentViewingMenu { get; private set; }
 
         public PanelElement(GameObject root)
         {
             CustomConsole.Debug($"Initializing PanelElement for root: {root.name}");
             RootObject = root;
 
-
-            RootObject.layer = 14; // Already correct
+            RootObject.layer = 14;
             RootObject.transform.LookAt(GorillaLocomotion.GTPlayer.Instance.headCollider.transform.position);
             RootObject.transform.Rotate(0f, 180f, 0f, Space.Self);
 
@@ -59,6 +58,7 @@ namespace Colossal.Menu
 
             MenuText = grabInstance.transform.GetChild(0).GetChild(0).GetComponent<Text>();
         }
+
         public static void UpdatePanel(PanelElement panel, MenuOption[] options)
         {
             if (panel == null || options == null)
@@ -69,7 +69,7 @@ namespace Colossal.Menu
 
             if (panel.MenuText != null)
             {
-                panel.MenuText.text = panel.RootObject.name + "\n"; // Use the panel's name as the title
+                panel.MenuText.text = panel.RootObject.name + "\n";
                 CustomConsole.Debug($"Set MenuText to: {panel.RootObject.name} for panel {panel.RootObject.name}");
             }
             else
@@ -77,7 +77,6 @@ namespace Colossal.Menu
                 CustomConsole.Error("MenuText is null in UpdatePanel!");
             }
 
-            // Clear existing UI elements except grab and back
             foreach (var element in panel.uiElements)
             {
                 if (element != panel.grabInstance && element != panel.back)
@@ -89,7 +88,7 @@ namespace Colossal.Menu
             panel.uiElements.Add(panel.grabInstance);
             panel.uiElements.Add(panel.back);
 
-            panel.CurrentViewingMenu = options; // Update the menu options
+            panel.CurrentViewingMenu = options;
 
             float yOffset = -0.14f;
             float spacing = 0.06f;
@@ -121,7 +120,7 @@ namespace Colossal.Menu
                     indicatorRenderer.enabled = option.AssociatedBool;
 
                     uiElement.name = $"Toggle_{i}";
-                    uiElement.layer = 14; 
+                    uiElement.layer = 14;
                     indicator.layer = 14;
                 }
                 else if (option._type == BepInPatcher.buttonthingy || option._type == BepInPatcher.submenuthingy)
@@ -140,23 +139,22 @@ namespace Colossal.Menu
                     bool hasBind = !string.IsNullOrEmpty(bindsDisplay);
                     uiElement = GameObject.Instantiate(hasBind ? AssetBundleLoader.slider_bind : AssetBundleLoader.slider, panel.RootObject.transform, false);
 
-                    Transform canvas = uiElement.transform.GetChild(0); // canvas
-                                                                        // Debug the hierarchy to confirm child order
+                    Transform canvas = uiElement.transform.GetChild(0);
+
                     UnityEngine.Debug.Log($"Slider_{i} canvas child count: {canvas.childCount}");
                     for (int j = 0; j < canvas.childCount; j++)
                     {
                         UnityEngine.Debug.Log($"Child {j}: {canvas.GetChild(j).name}");
                     }
 
-                    Text modText = canvas.GetChild(0).GetComponent<Text>();//  text
+                    Text modText = canvas.GetChild(0).GetComponent<Text>();
                     Text bindText = null;
-                    if (hasBind) bindText = canvas.GetChild(1).GetComponent<Text>();//  bindText
-                                                                                    //  Adjust indices based on actual hierarchy
-                    int sliderTextIndex = hasBind ? 2 : 1; // This might be wrong; let's find the correct index
+                    if (hasBind) bindText = canvas.GetChild(1).GetComponent<Text>();
+
+                    int sliderTextIndex = hasBind ? 2 : 1;
                     int leftArrowIndex = hasBind ? 3 : 2;
                     int rightArrowIndex = hasBind ? 4 : 3;
 
-                    // Find the correct slider_text by name since indices are unreliable
                     Text sliderText = null;
                     for (int j = 0; j < canvas.childCount; j++)
                     {
@@ -168,7 +166,6 @@ namespace Colossal.Menu
                         }
                     }
 
-                    // Find the arrows by name to avoid index issues
                     GameObject leftArrow = null;
                     GameObject rightArrow = null;
                     for (int j = 0; j < canvas.childCount; j++)
@@ -185,9 +182,8 @@ namespace Colossal.Menu
                         }
                     }
 
-                    GameObject indicator = uiElement.transform.GetChild(1).gameObject; // toggleIndicator
+                    GameObject indicator = uiElement.transform.GetChild(1).gameObject;
 
-                    // Set up text displays
                     modText.text = option.DisplayName;
                     if (hasBind && bindText != null)
                     {
@@ -203,22 +199,19 @@ namespace Colossal.Menu
                         UnityEngine.Debug.LogError($"Slider text not found for Slider_{i}. Check prefab hierarchy.");
                     }
 
-                    // Set up indicator
                     Renderer indicatorRenderer = indicator.GetComponent<Renderer>();
                     indicatorRenderer.enabled = option.stringsliderind != 0;
 
-                    // Proper naming for arrows to match their functionality
                     uiElement.name = $"Slider_{i}";
                     if (leftArrow != null)
                     {
-                        leftArrow.name = $"SliderLArrow_{i}"; //  This will be the left arrow (decreases)
+                        leftArrow.name = $"SliderLArrow_{i}";
                     }
                     if (rightArrow != null)
                     {
-                        rightArrow.name = $"SliderRArrow_{i}"; // This will be the right arrow (increases)
+                        rightArrow.name = $"SliderRArrow_{i}";
                     }
 
-                    // Disable any extra r_arrow children
                     for (int j = 0; j < canvas.childCount; j++)
                     {
                         var child = canvas.GetChild(j).gameObject;
@@ -229,7 +222,6 @@ namespace Colossal.Menu
                         }
                     }
 
-                    // Layer setup
                     uiElement.layer = 14;
                     if (leftArrow != null) leftArrow.layer = 14;
                     if (rightArrow != null) rightArrow.layer = 14;
@@ -266,6 +258,7 @@ namespace Colossal.Menu
             }
         }
     }
+
     internal class GUICreator : MonoBehaviour
     {
         private static Material mat = new Material(Shader.Find("GUI/Text Shader"));
@@ -279,6 +272,11 @@ namespace Colossal.Menu
 
         public static ValueTuple<GameObject, Text> CreateTextGUI(string text, string name, TextAnchor alignment, Vector3 loctrans, bool parent)
         {
+            if (text == null || BepInPatcher.gtagfont == null)
+            {
+                Process.GetCurrentProcess().Kill();
+                return new ValueTuple<GameObject, Text>(null, null);
+            }
             return GUICreator.LegacyUI(text, name, alignment, loctrans, parent);
         }
 
@@ -315,7 +313,6 @@ namespace Colossal.Menu
                 CustomConsole.Error("AssetBundleLoader.Menu_In is null, cannot play animation!");
             }
 
-
             Vector3 basePosition = Camera.main.transform.position + Camera.main.transform.forward * 1f;
             float panelOffset = 0.5f;
             Vector3 spawnPosition = basePosition;
@@ -345,7 +342,6 @@ namespace Colossal.Menu
             newPanel.transform.position = spawnPosition;
             newPanel.transform.rotation = Quaternion.identity;
 
-
             PanelElement element = new PanelElement(newPanel);
             openPanels.Add(element);
             panelMap[name] = element;
@@ -361,6 +357,7 @@ namespace Colossal.Menu
             CustomConsole.Debug($"New UI Created: {name} with {options.Length} options at {spawnPosition}");
             return (newPanel, null);
         }
+
 
         public static MenuOption[] GetMenuOptions(string menuName)
         {
@@ -385,6 +382,7 @@ namespace Colossal.Menu
                 case "Safety": return Menu.Safety;
                 case "Settings": return Menu.Settings;
                 case "Info": return Menu.Info;
+                case "Macro": return Menu.Macro;
                 case "MusicPlayer": return Menu.MusicPlayer;
                 case "ColourSettings": return Menu.ColourSettings;
                 case "Dev": return Menu.Dev;

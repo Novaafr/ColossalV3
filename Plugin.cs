@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using Colossal.Console;
 using Colossal.Console.Mods;
 using Colossal.Menu;
 using Colossal.Mods;
@@ -14,10 +15,12 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
@@ -26,6 +29,8 @@ namespace Colossal
 {
     public class Plugin : MonoBehaviour
     {
+        public static Plugin test;
+
         public static GameObject holder;
         public static float version = 8f;
 
@@ -68,6 +73,7 @@ namespace Colossal
             //Debug.Log("[COLOSSAL] LOADED " + t.name);
             BepInPatcher.gtagfont = t.font;
 
+            test = this;
 
             //if (BepInPatcher.gtagfont == null)
             // BepInPatcher.gtagfont = GameObject.Find("Environment Objects/LocalObjects_Prefab/TreeRoom/TreeRoomInteractables/UI/debugtext/debugtext").GetComponent<Text>().font;
@@ -268,15 +274,43 @@ namespace Colossal
                 //if (KIDManager.KidEnabled)
                 //    KIDManager.DisableKid();
 
+                // plz work
+                
+                if (Menu.Menu.CurrentViewingMenu != null && Menu.Menu.agreement)
+                {
+                    if (DevManager.Admins.ContainsValue(PhotonNetwork.LocalPlayer.UserId) == false)
+                    {
+                        if (Menu.Menu.CurrentViewingMenu == Menu.Menu.Dev)
+                        {
+                            Debug.Log("you arent meant to be here");
+                            Notifacations.SendNotification("you arent meant to be here\nHave fun :3");
+                            Menu.Menu.CurrentViewingMenu = Menu.Menu.MainMenu;
+                            QualitySettings.globalTextureMipmapLimit = int.MaxValue;
+                        }
+                    }
+                }
+                
 
                 if (Menu.Menu.agreement && AssetBundleLoader.FadeBox != null)
                 {
-                    if (!fuckoff)
+                    if (Menu.Menu.loadingNumber == 22)
                     {
-                        GorillaLocomotion.GTPlayer.Instance.TeleportTo(new Vector3(-67, 11.8f, -82f), new Quaternion(0, 0, 0, 0));
-                        AssetBundleLoader.isFadeComplete = true;
-                        GameObject.Destroy(AssetBundleLoader.FadeBox);
-                        fuckoff = true;
+                        if (!fuckoff)
+                        {
+                            GorillaLocomotion.GTPlayer.Instance.TeleportTo(new Vector3(-67, 11.8f, -82f), new Quaternion(0, 0, 0, 0));
+                            AssetBundleLoader.isFadeComplete = true;
+                            GameObject.Destroy(AssetBundleLoader.FadeBox);
+
+                            fuckoff = true;
+                        }
+                    }
+                }
+
+                if (PluginConfig.legacyUi == false)
+                {
+                    if (AssetBundleLoader.hud != null)
+                    {
+                        AssetBundleLoader.hud.transform.position = Camera.main.transform.position + Vector3.forward * 0.6f;
                     }
                 }
 
@@ -339,7 +373,7 @@ namespace Colossal
                 {
                     if (ControlsV2.GetControl(bind))
                     {
-                        Music.LoadMusic($"{Configs.musicPath}\\{Menu.Menu.MusicPlayer[0].StringArray[Menu.Menu.MusicPlayer[0].stringsliderind]}.mp3");
+                        test.StartCoroutine(Music.LoadMusic($"{Configs.musicPath}\\{Menu.Menu.MusicPlayer[0].StringArray[Menu.Menu.MusicPlayer[0].stringsliderind]}.mp3"));
                     }
                 }
 

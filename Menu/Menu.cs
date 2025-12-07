@@ -6,7 +6,9 @@ using Photon.Pun;
 using Photon.Realtime;
 using PlayFab;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -51,7 +53,7 @@ namespace Colossal.Menu
 
 
         private static GameObject pointerObj;
-        private static PanelElement activePanel; // Track the currently active panel
+        public static PanelElement activePanel; // Track the currently active panel
         private static PanelElement grabbedPanel = null; // Ensure this is a field
         private static Vector3 grabOffset;
         private static bool isVRModeActive = false;
@@ -76,6 +78,7 @@ namespace Colossal.Menu
         public static MenuOption[] Safety;
         public static MenuOption[] Settings;
         public static MenuOption[] Info;
+        public static MenuOption[] Macro;
         public static MenuOption[] MusicPlayer;
         public static MenuOption[] Dev;
         private static bool devMenuAdded = false;
@@ -102,7 +105,7 @@ namespace Colossal.Menu
             {
                 if (!agreement)
                 {
-                    // AssetBundleLoader.SpawnVoidBubbles();
+                    AssetBundleLoader.SpawnVoidBubbles();
 
                     (AgreementHub, AgreementHubText) = GUICreator.CreateTextGUI("<color=magenta><VR CONTROLS></color>\nLeft Joystick Click (Hold):\nRight Grip: Select\nRight Trigger: Scroll\nLeft Trigger: Custom Bind\nLeft Grip: Remove Custom Bind\nBoth Joysticks: Toggle UI\n\n<color=magenta><PC CONTROLS></color>\nEnterKey: Select\nArrowKey (Up): Move Up\nArrowKey (Down): Move Down\n\n<color=red>Be Patient While Loading</color>\n<color=cyan>Press Both Joysticks Or Enter...</color>", "AgreementHub", TextAnchor.MiddleCenter, new Vector3(0, 0f, 2), true);
                 }
@@ -132,267 +135,22 @@ namespace Colossal.Menu
                     if (Plugin.holder.GetComponent<Boards>() == null)
                         Plugin.holder.AddComponent<Boards>();
 
+                    if (Plugin.holder.GetComponent<MacroRecorder>() == null)
+                        Plugin.holder.AddComponent<MacroRecorder>();
+
                     CustomConsole.Debug("Added all menu components");
 
 
                     //if (BepInPatcher.buttonthingy.IsNullOrEmpty().ToString().IsNullOrWhiteSpace() || BepInPatcher.backthingy.IsNullOrEmpty().ToString().IsNullOrWhiteSpace() || BepInPatcher.submenuthingy.IsNullOrEmpty().ToString().IsNullOrWhiteSpace() || BepInPatcher.sliderthingy.IsNullOrEmpty().ToString().IsNullOrWhiteSpace() || BepInPatcher.togglethingy.IsNullOrEmpty().ToString().IsNullOrWhiteSpace())
                     if (!BepInPatcher.buttonthingy.IsNullOrEmpty() || !BepInPatcher.backthingy.IsNullOrEmpty() || !BepInPatcher.submenuthingy.IsNullOrEmpty() || !BepInPatcher.sliderthingy.IsNullOrEmpty() || !BepInPatcher.togglethingy.IsNullOrEmpty())
                     {
-                        (MenuHub, MenuHubText) = GUICreator.CreateTextGUI("", "MenuHub", TextAnchor.UpperLeft, new Vector3(0, 0.4f, 3.6f), true);
-
-                        MainMenu = new MenuOption[12];
-                        MainMenu[0] = new MenuOption { DisplayName = "Movement", _type = "submenuthingy", AssociatedString = "Movement" };
-                        MainMenu[1] = new MenuOption { DisplayName = "Visual", _type = "submenuthingy", AssociatedString = "Visual" };
-                        MainMenu[2] = new MenuOption { DisplayName = "Player", _type = "submenuthingy", AssociatedString = "Player" };
-                        MainMenu[3] = new MenuOption { DisplayName = "Computer", _type = "submenuthingy", AssociatedString = "Computer" };
-                        MainMenu[4] = new MenuOption { DisplayName = "Exploits", _type = "submenuthingy", AssociatedString = "Exploits" };
-                        MainMenu[5] = new MenuOption { DisplayName = "Safety", _type = "submenuthingy", AssociatedString = "Safety" };
-                        MainMenu[6] = new MenuOption { DisplayName = "MusicPlayer", _type = "submenuthingy", AssociatedString = "MusicPlayer" };
-                        MainMenu[7] = new MenuOption { DisplayName = "Settings", _type = "submenuthingy", AssociatedString = "Settings" };
-                        MainMenu[8] = new MenuOption { DisplayName = "Info", _type = "submenuthingy", AssociatedString = "Info" };
-                        MainMenu[9] = new MenuOption { DisplayName = "Notifications", _type = "togglethingy", AssociatedBool = PluginConfig.Notifications };
-                        MainMenu[10] = new MenuOption { DisplayName = "Overlay", _type = "togglethingy", AssociatedBool = PluginConfig.overlay };
-                        MainMenu[11] = new MenuOption { DisplayName = "Tool Tips", _type = "togglethingy", AssociatedBool = PluginConfig.tooltips };
-
-                        Movement = new MenuOption[12];
-                        Movement[0] = new MenuOption { DisplayName = "ExcelFly", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "Super Slow", "Slow", "Medium", "Fast", "Super Fast" } };
-                        Movement[1] = new MenuOption { DisplayName = "TFly", _type = "togglethingy", AssociatedBool = PluginConfig.tfly };
-                        Movement[2] = new MenuOption { DisplayName = "WallWalk", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "6.8", "7", "7.5", "7.8", "8", "8.5", "8.8", "9", "9.5", "9.8" } };
-                        Movement[3] = new MenuOption { DisplayName = "Speed Options", _type = "submenuthingy", AssociatedString = "Speed Options" };
-                        Movement[4] = new MenuOption { DisplayName = "Platforms", _type = "togglethingy", AssociatedBool = PluginConfig.platforms };
-                        Movement[5] = new MenuOption { DisplayName = "UpsideDown Monkey", _type = "togglethingy", AssociatedBool = PluginConfig.upsidedownmonkey };
-                        Movement[6] = new MenuOption { DisplayName = "WateryAir", _type = "togglethingy", AssociatedBool = PluginConfig.wateryair };
-                        Movement[7] = new MenuOption { DisplayName = "LongArms", _type = "togglethingy", AssociatedBool = PluginConfig.longarms };
-                        Movement[8] = new MenuOption { DisplayName = "SpinBot", _type = "togglethingy", AssociatedBool = PluginConfig.SpinBot };
-                        Movement[9] = new MenuOption { DisplayName = "WASDFly", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "5", "7", "10", "13", "16" } };
-                        Movement[10] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Movement2" };
-                        Movement[11] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Movement2 = new MenuOption[14];
-                        Movement2[0] = new MenuOption { DisplayName = "Timer", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "1.03x", "1.06x", "1.09x", "1.1x", "1.13x", "1.16x", "1.19x", "1.2x", "1.23x", "1.26", "1.29", "1.3x", "2x", "3x", "4x", "5x" } };
-                        Movement2[1] = new MenuOption { DisplayName = "FloatyMonkey", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "1.1", "1.2", "1.4", "1.6", "1.8", "2", "2.2", "2.4", "2.6", "2.8", "3", "3.2", "3.4", "3.6", "3.8", "4", "Anti Grav" } };
-                        Movement2[2] = new MenuOption { DisplayName = "Climbable Gorillas", _type = "togglethingy", AssociatedBool = PluginConfig.ClimbableGorillas };
-                        Movement2[3] = new MenuOption { DisplayName = "Near Pulse", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" } };
-                        Movement2[4] = new MenuOption { DisplayName = "Near Pulse Distance", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" } };
-                        Movement2[5] = new MenuOption { DisplayName = "Player Scale", _type = "togglethingy", AssociatedBool = PluginConfig.PlayerScale };
-                        Movement2[6] = new MenuOption { DisplayName = "No Clip", _type = "togglethingy", AssociatedBool = PluginConfig.NoClip };
-                        Movement2[7] = new MenuOption { DisplayName = "Force Tag Freeze", _type = "togglethingy", AssociatedBool = PluginConfig.forcetagfreeze };
-                        Movement2[8] = new MenuOption { DisplayName = "Teleport To Random", _type = "buttonthingy", AssociatedString = "teleporttorandom" };
-                        Movement2[9] = new MenuOption { DisplayName = "HZ Hands", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" } };
-                        Movement2[10] = new MenuOption { DisplayName = "Throw", _type = "togglethingy", AssociatedBool = PluginConfig.Throw };
-                        Movement2[11] = new MenuOption { DisplayName = "Strafe Options", _type = "submenuthingy", AssociatedString = "Strafe Options" };
-                        Movement2[12] = new MenuOption { DisplayName = "Joystick Fly", _type = "togglethingy", AssociatedBool = PluginConfig.joystickfly };
-                        Movement2[13] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Speed = new MenuOption[5];
-                        Speed[0] = new MenuOption { DisplayName = "Speed", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "7", "7.2", "7.4", "7.6", "7.8", "8", "8.2", "8.4", "8.6" } };
-                        Speed[1] = new MenuOption { DisplayName = "Speed Toggle", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "7", "7.2", "7.4", "7.6", "7.8", "8", "8.2", "8.4", "8.6" } };
-                        Speed[2] = new MenuOption { DisplayName = "Near Speed", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "7", "7.2", "7.4", "7.6", "7.8", "8", "8.2", "8.4", "8.6" } };
-                        Speed[3] = new MenuOption { DisplayName = "Near Speed Distance", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25" } };
-                        Speed[4] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Strafe = new MenuOption[4];
-                        Strafe[0] = new MenuOption { DisplayName = "Strafe", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "Look", "Target", "Target [TEAM]", "L Joystick" } };
-                        Strafe[1] = new MenuOption { DisplayName = "Strafe Speed", _type = "sliderthingy", StringArray = new string[] { "6", "8", "10", "12", "14", "16", "18", "20" } };
-                        Strafe[2] = new MenuOption { DisplayName = "Strafe Jump Amount", _type = "sliderthingy", StringArray = new string[] { "1", "2", "3", "4", "5", "6", "7", "8" } };
-                        Strafe[3] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Visual = new MenuOption[12];
-                        Visual[0] = new MenuOption { DisplayName = "Chams", _type = "togglethingy", AssociatedBool = PluginConfig.chams };
-                        Visual[1] = new MenuOption { DisplayName = "BoxESP", _type = "togglethingy", AssociatedBool = PluginConfig.boxesp };
-                        Visual[2] = new MenuOption { DisplayName = "HollowBoxESP", _type = "togglethingy", AssociatedBool = PluginConfig.hollowboxesp };
-                        Visual[3] = new MenuOption { DisplayName = "BoneESP", _type = "togglethingy", AssociatedBool = PluginConfig.boneesp };
-                        Visual[4] = new MenuOption { DisplayName = "Tracers", _type = "submenuthingy", AssociatedString = "Tracers" };
-                        Visual[5] = new MenuOption { DisplayName = "NameTags", _type = "submenuthingy", AssociatedString = "NameTags" };
-                        Visual[6] = new MenuOption { DisplayName = "Proximity Alert", _type = "togglethingy", AssociatedBool = PluginConfig.ProximityAlert };
-                        Visual[7] = new MenuOption { DisplayName = "Full Bright", _type = "togglethingy", AssociatedBool = PluginConfig.fullbright };
-                        Visual[8] = new MenuOption { DisplayName = "Sky Colour", _type = "sliderthingy", StringArray = new string[] { "Default", "Purple", "Red", "Cyan", "Green", "Black" } };
-                        Visual[9] = new MenuOption { DisplayName = "WhyIsEveryoneLookingAtMe", _type = "togglethingy", AssociatedBool = PluginConfig.whyiseveryonelookingatme };
-                        Visual[10] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Visual2" };
-                        Visual[11] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Visual2 = new MenuOption[7];
-                        Visual2[0] = new MenuOption { DisplayName = "SplashMonkey", _type = "togglethingy", AssociatedBool = PluginConfig.SplashMonkey };
-                        Visual2[1] = new MenuOption { DisplayName = "NoLeaves", _type = "togglethingy", AssociatedBool = PluginConfig.NoLeaves };
-                        Visual2[2] = new MenuOption { DisplayName = "ComicTags [DISABLED]", _type = "togglethingy", AssociatedBool = PluginConfig.ComicTags };
-                        Visual2[3] = new MenuOption { DisplayName = "Anti Screen Share", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "VR View", "PC View" } };
-                        Visual2[4] = new MenuOption { DisplayName = "CCM Sight", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "Self & Others", "Others", "Self" } };
-                        Visual2[5] = new MenuOption { DisplayName = "Show Boards", _type = "togglethingy", AssociatedBool = PluginConfig.ShowBoards };
-                        Visual2[6] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Tracers = new MenuOption[3];
-                        Tracers[0] = new MenuOption { DisplayName = "Tracers", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "RHand", "LHand", "Head", "Screen" } };
-                        Tracers[1] = new MenuOption { DisplayName = "Tracer Size", _type = "sliderthingy", StringArray = new string[] { "Extremely Small", "Super Small", "Small", "Medium", "Large", "Giant", "Huge" } };
-                        Tracers[2] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        NameTags = new MenuOption[10];
-                        NameTags[0] = new MenuOption { DisplayName = "NameTags", _type = "togglethingy", AssociatedBool = PluginConfig.NameTags };
-                        NameTags[1] = new MenuOption { DisplayName = "Show Creation Date", _type = "togglethingy", AssociatedBool = PluginConfig.ShowCreationDate };
-                        NameTags[2] = new MenuOption { DisplayName = "Show Colour Code", _type = "togglethingy", AssociatedBool = PluginConfig.ShowColourCode };
-                        NameTags[3] = new MenuOption { DisplayName = "Show Distance", _type = "togglethingy", AssociatedBool = PluginConfig.ShowDistance };
-                        NameTags[4] = new MenuOption { DisplayName = "Always Visible", _type = "togglethingy", AssociatedBool = PluginConfig.AlwaysVisible };
-                        NameTags[5] = new MenuOption { DisplayName = "Show FPS", _type = "togglethingy", AssociatedBool = PluginConfig.ShowFPS };
-                        NameTags[6] = new MenuOption { DisplayName = "NameTag Height", _type = "sliderthingy", StringArray = new string[] { "Chest", "Above Head" } };
-                        NameTags[7] = new MenuOption { DisplayName = "NameTag Size", _type = "sliderthingy", StringArray = new string[] { "Chest Size", "Small", "Medium", "Large" } };
-                        NameTags[8] = new MenuOption { DisplayName = "NameTag Colour", _type = "sliderthingy", StringArray = new string[] { "White", "Yellow", "Green", "Blue", "Red", "Cyan", "Black" } };
-                        NameTags[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Player = new MenuOption[14];
-                        Player[0] = new MenuOption { DisplayName = "NoFinger", _type = "togglethingy", AssociatedBool = PluginConfig.nofinger };
-                        Player[1] = new MenuOption { DisplayName = "TagGun", _type = "togglethingy", AssociatedBool = PluginConfig.taggun };
-                        Player[2] = new MenuOption { DisplayName = "CreeperMonkey", _type = "togglethingy", AssociatedBool = PluginConfig.creepermonkey };
-                        Player[3] = new MenuOption { DisplayName = "GhostMonkey", _type = "togglethingy", AssociatedBool = PluginConfig.ghostmonkey };
-                        Player[4] = new MenuOption { DisplayName = "InvisMonkey", _type = "togglethingy", AssociatedBool = PluginConfig.invismonkey };
-                        Player[5] = new MenuOption { DisplayName = "TagAura", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "Really Close", "Close", "Legit", "Semi Legit", "Semi Blatant", "Blatant", "Rage" } };
-                        Player[6] = new MenuOption { DisplayName = "TagAll", _type = "togglethingy", AssociatedBool = PluginConfig.tagall };
-                        Player[7] = new MenuOption { DisplayName = "Desync [DISABLED]", _type = "togglethingy", AssociatedBool = PluginConfig.desync };
-                        Player[8] = new MenuOption { DisplayName = "HitBoxes", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "Really Close", "Close", "Legit", "Semi Legit", "Semi Blatant", "Blatant", "Rage" } };
-                        Player[9] = new MenuOption { DisplayName = "No Wind", _type = "togglethingy", AssociatedBool = PluginConfig.nowind };
-                        Player[10] = new MenuOption { DisplayName = "Anti Grab", _type = "togglethingy", AssociatedBool = PluginConfig.antigrab };
-                        Player[11] = new MenuOption { DisplayName = "Name Changer", _type = "togglethingy", AssociatedBool = PluginConfig.namechanger, extra = "[STUMP]" };
-                        Player[12] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Player2" };
-                        Player[13] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Player2 = new MenuOption[12];
-                        Player2[0] = new MenuOption { DisplayName = "Decapitation", _type = "togglethingy", AssociatedBool = PluginConfig.decapitation };
-                        Player2[1] = new MenuOption { DisplayName = "Rainbow Monkey", _type = "togglethingy", AssociatedBool = PluginConfig.rainbowmonkey, extra = "[STUMP]" };
-                        Player2[2] = new MenuOption { DisplayName = "Bad Apple Monkey", _type = "togglethingy", AssociatedBool = PluginConfig.badapplemonkey, extra = "[STUMP]" };
-                        Player2[3] = new MenuOption { DisplayName = "Aimbot", _type = "sliderthingy", extra = "[PAINTBRAWL]", StringArray = new string[] { "[OFF]", "Silent Aim", "Slilent Aim (Preds)" } };
-                        Player2[4] = new MenuOption { DisplayName = "Anti Tag", _type = "togglethingy", AssociatedBool = PluginConfig.antitag };
-                        Player2[5] = new MenuOption { DisplayName = "Fake Lag", _type = "togglethingy", AssociatedBool = PluginConfig.fakelag };
-                        Player2[6] = new MenuOption { DisplayName = "Disable Ghost Doors", _type = "togglethingy", AssociatedBool = PluginConfig.disableghostdoors };
-                        Player2[7] = new MenuOption { DisplayName = "Coloured Braclet", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "Rainbow", "Purple", "Black", "White", "Red", "Green", "Blue", "Yellow" } };
-                        Player2[8] = new MenuOption { DisplayName = "Ghost Self", _type = "buttonthingy", AssociatedString = "ghostself", extra = "[GR]" };
-                        Player2[9] = new MenuOption { DisplayName = "Ghost Revive Self", _type = "buttonthingy", AssociatedString = "ghostreviveself", extra = "[M] [GR]" };
-                        Player2[10] = new MenuOption { DisplayName = "FPS Spoof", _type = "togglethingy", AssociatedBool = PluginConfig.fpsspoof };
-                        Player2[11] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Exploits = new MenuOption[10];
-                        Exploits[0] = new MenuOption { DisplayName = "Break NameTags", _type = "togglethingy", AssociatedBool = PluginConfig.breaknametags };
-                        Exploits[1] = new MenuOption { DisplayName = "SS Platforms", _type = "togglethingy", AssociatedBool = PluginConfig.SSPlatforms, extra = "[M] [BASEMENT]" };
-                        Exploits[2] = new MenuOption { DisplayName = "Audio Crash", _type = "togglethingy", AssociatedBool = PluginConfig.audiocrash };
-                        Exploits[3] = new MenuOption { DisplayName = "Cosmetics Spoofer", _type = "submenuthingy", AssociatedString = "Cosmetics Spoofer" };
-                        Exploits[4] = new MenuOption { DisplayName = "Freeze All", _type = "togglethingy", AssociatedBool = PluginConfig.freezeall };
-                        Exploits[5] = new MenuOption { DisplayName = "Become Guardian", _type = "buttonthingy", AssociatedString = "Become Guardian", extra = "[M]" };
-                        Exploits[6] = new MenuOption { DisplayName = "Always Guardian", _type = "togglethingy", AssociatedBool = PluginConfig.alwaysguardian };
-                        Exploits[7] = new MenuOption { DisplayName = "Assend All", _type = "togglethingy", AssociatedBool = PluginConfig.assendall, extra = "[GUARDIAN]" };
-                        Exploits[8] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Exploits2" };
-                        Exploits[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Exploits2 = new MenuOption[5];
-                        Exploits2[0] = new MenuOption { DisplayName = "App Quit All", _type = "togglethingy", AssociatedBool = PluginConfig.appquitall, extra = "[GUARDIAN]" };
-                        Exploits2[1] = new MenuOption { DisplayName = "Snowball Gun", _type = "togglethingy", AssociatedBool = PluginConfig.snowballgun };
-                        Exploits2[2] = new MenuOption { DisplayName = "Max Quest Score", _type = "buttonthingy", AssociatedString = "Max Quest Score" };
-                        Exploits2[3] = new MenuOption { DisplayName = "Kick All", _type = "togglethingy", AssociatedBool = PluginConfig.kickall, extra = "[GUARDIAN]" };
-                        Exploits2[4] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        CosmeticsSpoofer = new MenuOption[2];
-                        CosmeticsSpoofer[0] = new MenuOption { DisplayName = "Spaz All Cosmetics", _type = "togglethingy", AssociatedBool = PluginConfig.spazallcosmetics };
-                        CosmeticsSpoofer[1] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Computer = new MenuOption[10];
-                        Computer[0] = new MenuOption { DisplayName = "Disconnect", _type = "buttonthingy", AssociatedString = "disconnect" };
-                        Computer[1] = new MenuOption { DisplayName = "Join GTC", _type = "buttonthingy", AssociatedString = "join GTC" };
-                        Computer[2] = new MenuOption { DisplayName = "Join TTT", _type = "buttonthingy", AssociatedString = "join TTT" };
-                        Computer[3] = new MenuOption { DisplayName = "Join YTTV", _type = "buttonthingy", AssociatedString = "join YTTV" };
-                        Computer[4] = new MenuOption { DisplayName = "Join MODS", _type = "buttonthingy", AssociatedString = "join MODS" };
-                        Computer[5] = new MenuOption { DisplayName = "Join MOD", _type = "buttonthingy", AssociatedString = "join MOD" };
-                        Computer[6] = new MenuOption { DisplayName = "Join:", _type =   "buttonthingy", AssociatedString = "join", extra = "roomtojoin" };
-                        Computer[7] = new MenuOption { DisplayName = "Join CCMV2 Only", _type = "buttonthingy", AssociatedString = "join CCMV2 Only" };
-                        Computer[8] = new MenuOption { DisplayName = "Gamemodes", _type = "submenuthingy", AssociatedString = "Gamemodes" };
-                        Computer[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Gamemodes = new MenuOption[10];
-                        Gamemodes[0] = new MenuOption { DisplayName = "Modded Gamemode", _type = "togglethingy", AssociatedBool = PluginConfig.moddedgamemode };
-                        Gamemodes[1] = new MenuOption { DisplayName = "Competitive Gamemode", _type = "togglethingy", AssociatedBool = PluginConfig.competitivegamemode };
-                        Gamemodes[2] = new MenuOption { DisplayName = "Infection", _type = "buttonthingy", AssociatedString = "cgamemode Infection" };
-                        Gamemodes[3] = new MenuOption { DisplayName = "Casual", _type = "buttonthingy", AssociatedString = "cgamemode Casual" };
-                        Gamemodes[4] = new MenuOption { DisplayName = "Hunt", _type = "buttonthingy", AssociatedString = "cgamemode Hunt" };
-                        Gamemodes[5] = new MenuOption { DisplayName = "PaintBrawl", _type = "buttonthingy", AssociatedString = "cgamemode Paintbrawl" };
-                        Gamemodes[6] = new MenuOption { DisplayName = "Guardian", _type = "buttonthingy", AssociatedString = "cgamemode Guardian" };
-                        Gamemodes[7] = new MenuOption { DisplayName = "Ambush", _type = "buttonthingy", AssociatedString = "cgamemode Ambush" };
-                        Gamemodes[8] = new MenuOption { DisplayName = "Freeze Tag", _type = "buttonthingy", AssociatedString = "cgamemode FreezeTag" };
-                        Gamemodes[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Safety = new MenuOption[7];
-                        Safety[0] = new MenuOption { DisplayName = "Panic", _type = "togglethingy", AssociatedBool = PluginConfig.Panic };
-                        Safety[1] = new MenuOption { DisplayName = "AntiReport", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "Disconnect", "Reconnect", "Join Random" } };
-                        Safety[2] = new MenuOption { DisplayName = "RandomIdentity", _type = "buttonthingy", AssociatedString = "randomidentity" };
-                        Safety[3] = new MenuOption { DisplayName = "Pc Check Bypass", _type = "togglethingy", AssociatedBool = PluginConfig.pccheckbypass };
-                        Safety[4] = new MenuOption { DisplayName = "Fake Quest Menu", _type = "togglethingy", AssociatedBool = PluginConfig.fakequestmenu };
-                        Safety[5] = new MenuOption { DisplayName = "Fake Report Menu", _type = "togglethingy", AssociatedBool = PluginConfig.fakereportmenu };
-                        Safety[6] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Settings = new MenuOption[11];
-                        Settings[0] = new MenuOption { DisplayName = "Colour Settings", _type = "submenuthingy", AssociatedString = "ColourSettings" };
-                        Settings[1] = new MenuOption { DisplayName = "MenuPosition", _type = "sliderthingy", StringArray = new string[] { "Top Left", "Middle", "Top Right" } };
-                        Settings[2] = new MenuOption { DisplayName = "Config", _type = "sliderthingy", StringArray = new string[] { } };
-                        Settings[3] = new MenuOption { DisplayName = "Load Config", _type = "buttonthingy", AssociatedString = "loadconfig" };
-                        Settings[4] = new MenuOption { DisplayName = "Save Config", _type = "buttonthingy", AssociatedString = "saveconfig" };
-                        Settings[5] = new MenuOption { DisplayName = "Player Logging", _type = "togglethingy", AssociatedBool = PluginConfig.PlayerLogging };
-                        Settings[6] = new MenuOption { DisplayName = "Inverted Controls", _type = "togglethingy", AssociatedBool = PluginConfig.invertedControls };
-                        Settings[7] = new MenuOption { DisplayName = "Legacy UI", _type = "togglethingy", AssociatedBool = PluginConfig.legacyUi };
-                        Settings[8] = new MenuOption { DisplayName = "Log Out", _type = "buttonthingy", AssociatedString = "logout" };
-                        Settings[9] = new MenuOption { DisplayName = "Dev", _type = "submenuthingy", AssociatedString = "Dev" };
-                        Settings[10] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        Info = new MenuOption[5];
-                        Info[0] = new MenuOption { DisplayName = "PlayerList", _type = "buttonthingy" };
-                        Info[1] = new MenuOption { DisplayName = "GTC Ranked Codes", _type = "buttonthingy" };
-                        Info[2] = new MenuOption { DisplayName = "IIDK Menu Users", _type = "buttonthingy" };
-                        Info[3] = new MenuOption { DisplayName = "CCMV2 Menu Users", _type = "buttonthingy" };
-                        Info[4] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        MusicPlayer = new MenuOption[8];
-                        MusicPlayer[0] = new MenuOption { DisplayName = "Music", _type = "sliderthingy", StringArray = new string[] { } };
-                        MusicPlayer[1] = new MenuOption { DisplayName = "Play Music", _type = "buttonthingy", AssociatedString = "playmusic" };
-                        MusicPlayer[2] = new MenuOption { DisplayName = "Stop Music", _type = "buttonthingy", AssociatedString = "stopmusic" };
-                        MusicPlayer[3] = new MenuOption { DisplayName = "Shuffle Music", _type = "buttonthingy", AssociatedString = "shufflemusic" };
-                        MusicPlayer[4] = new MenuOption { DisplayName = "Loop Music", _type = "togglethingy", AssociatedBool = PluginConfig.loopmusic };
-                        MusicPlayer[5] = new MenuOption { DisplayName = "Sound Board", _type = "togglethingy", AssociatedBool = PluginConfig.soundboard };
-                        MusicPlayer[6] = new MenuOption { DisplayName = "Volume", _type = "sliderthingy", StringArray = new string[] { "100%", "90%", "80%", "70%", "60%", "50%", "40%", "30%", "20%", "10%" } };
-                        MusicPlayer[7] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-                        ColourSettings = new MenuOption[10];
-                        ColourSettings[0] = new MenuOption { DisplayName = "MenuColour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-                        ColourSettings[1] = new MenuOption { DisplayName = "Ghost Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-                        ColourSettings[2] = new MenuOption { DisplayName = "Beam Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-                        ColourSettings[3] = new MenuOption { DisplayName = "ESP Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-                        ColourSettings[4] = new MenuOption { DisplayName = "Ghost Opacity", _type = "sliderthingy", StringArray = new string[] { "100%", "80%", "60%", "30%", "20%", "0%" } };
-                        ColourSettings[5] = new MenuOption { DisplayName = "HitBoxes Opacity", _type = "sliderthingy", StringArray = new string[] { "100%", "80%", "60%", "30%", "20%", "0%" } };
-                        ColourSettings[6] = new MenuOption { DisplayName = "HitBoxes Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-                        ColourSettings[7] = new MenuOption { DisplayName = "Platforms Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-                        ColourSettings[8] = new MenuOption { DisplayName = "TargetIndicator Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-                        ColourSettings[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-
-                        Dev = new MenuOption[14];
-                        Dev[0] = new MenuOption { DisplayName = "Dev Kick Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devkickgun };
-                        Dev[1] = new MenuOption { DisplayName = "Dev Kick All", _type = "buttonthingy", AssociatedString = "Dev Kick All" };
-                        Dev[2] = new MenuOption { DisplayName = "Dev Crash Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devcrashgun };
-                        Dev[3] = new MenuOption { DisplayName = "Dev Crash All", _type = "buttonthingy", AssociatedString = "Dev Crash All" };
-                        Dev[4] = new MenuOption { DisplayName = "Dev Mute Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devmutegun };
-                        Dev[5] = new MenuOption { DisplayName = "Dev UnMute Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devunmutegun };
-                        Dev[6] = new MenuOption { DisplayName = "Dev Notify All", _type = "buttonthingy", AssociatedString = "Dev Notify All" };
-                        Dev[7] = new MenuOption { DisplayName = "Dev Clients", _type = "buttonthingy", AssociatedString = "Dev Clients" };
-                        Dev[8] = new MenuOption { DisplayName = "Dev All To Hand", _type = "togglethingy", AssociatedBool = PluginConfig.devalltohand };
-                        Dev[9] = new MenuOption { DisplayName = "Dev Platform Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devplatformgun };
-                        Dev[10] = new MenuOption { DisplayName = "Dev YTTV Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devyttvgun };
-                        Dev[11] = new MenuOption { DisplayName = "Dev Ban Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devbangun };
-                        Dev[12] = new MenuOption { DisplayName = "Dev RCE Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devrcegun };
-                        Dev[13] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
-
-
-                        MenuState = "MainMenu";
-                        CurrentViewingMenu = MainMenu;
-                        CustomConsole.Debug("Build Menu");
-
-                        UnityEngine.Object.Destroy(AgreementHub);
-                        // AssetBundleLoader.DespawnVoidBubbles();
+                        GameObject coroutineHostObj = new GameObject("LoadOnceCoroutineHost");
+                        LoadOnceCoroutineHost coroutineHost = coroutineHostObj.AddComponent<LoadOnceCoroutineHost>();
+                        coroutineHost.StartCoroutine(LoadMenus(coroutineHostObj));
                     }
                     else
                     {
-                        MenuHubText.text = "<color=red>Error Loading Menu Types (Code: 2)\nPlease Show This To ColossusYTTV\nRestart Your Game</color>";
+                        MenuHubText.text = "<color=red>Error Loading Menu Types (Code: 2)\nPlease Show This To Nova\nRestart Your Game</color>";
                         return;
                     }
 
@@ -406,16 +164,112 @@ namespace Colossal.Menu
                         }
                     }
 
+                    if (GUICreator.panelMap.TryGetValue("MainMenu", out var mainPanel))
+                        activePanel = mainPanel;
+
                     UpdateMenuState(new MenuOption(), null, null);
                     CustomConsole.Debug("Updated Menu State");
                 }
             }
             catch (Exception ex)
             {
-                Debug.Log(ex.ToString());
                 CustomConsole.Error(ex.ToString());
             }
         }
+
+        public static int loadingNumber = 0;
+        private class LoadOnceCoroutineHost : MonoBehaviour { }
+        private static IEnumerator LoadMenus(GameObject coroutineHostObj)
+        {
+            void UpdateLoadingText()
+            {
+                string loadingText = $"<color=magenta>Loading {loadingNumber}/22</color>";
+                if (AgreementHubText != null)
+                {
+                    AgreementHubText.text = loadingText;
+                }
+                else
+                {
+                    CustomConsole.Error("AgreementHubText is null");
+                }
+            }
+
+            UpdateLoadingText(); // Initial text
+
+            // Helper function to safely load a menu
+            MenuOption[] SafeLoadMenu(string menuName, string debugIndex)
+            {
+                try
+                {
+                    MenuOption[] menu = MenuLoader.LoadMenu();
+                    if (menu == null)
+                    {
+                        CustomConsole.Error($"Failed to load menu {menuName}: Returned null");
+                    }
+                    return menu;
+                }
+                catch (Exception ex)
+                {
+                    CustomConsole.Error($"Error loading menu {menuName}: {ex}");
+                    return null;
+                }
+            }
+
+            MainMenu = SafeLoadMenu("Menu_MainMenu", "1"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Movement = SafeLoadMenu("Menu_Movement", "2"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Movement2 = SafeLoadMenu("Menu_Movement2", "3"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Speed = SafeLoadMenu("Menu_Speed", "4"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Strafe = SafeLoadMenu("Menu_Strafe", "5"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            Visual = SafeLoadMenu("Menu_Visual", "6"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Visual2 = SafeLoadMenu("Menu_Visual2", "7"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Tracers = SafeLoadMenu("Menu_Tracers", "8"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            NameTags = SafeLoadMenu("Menu_NameTags", "9"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            Player = SafeLoadMenu("Menu_Player", "10"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Player2 = SafeLoadMenu("Menu_Player2", "11"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            Exploits = SafeLoadMenu("Menu_Exploits", "12"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Exploits2 = SafeLoadMenu("Menu_Exploits2", "13"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            CosmeticsSpoofer = SafeLoadMenu("Menu_CosmeticsSpoofer", "14"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            Computer = SafeLoadMenu("Menu_Computer", "15"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            Gamemodes = SafeLoadMenu("Menu_Gamemodes", "16"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            Safety = SafeLoadMenu("Menu_Safety", "17"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            Settings = SafeLoadMenu("Menu_Settings", "18"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+            ColourSettings = SafeLoadMenu("Menu_ColourSettings", "19"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            Info = SafeLoadMenu("Menu_Info", "20"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            MusicPlayer = SafeLoadMenu("Menu_MusicPlayer", "21"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            Macro = SafeLoadMenu("Menu_Macro", "22"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            // Final update
+            loadingNumber = 22;
+            UpdateLoadingText();
+
+            (MenuHub, MenuHubText) = GUICreator.CreateTextGUI("", "MenuHub", TextAnchor.UpperLeft, new Vector3(0, 0.4f, 3.6f), true);
+            if (MenuHub == null || MenuHubText == null)
+            {
+                CustomConsole.Error("Failed to create MenuHub or MenuHubText");
+                GameObject.Destroy(coroutineHostObj);
+                UnityEngine.Object.Destroy(AgreementHub);
+                AssetBundleLoader.DespawnVoidBubbles();
+                yield break;
+            }
+
+            MenuState = "MainMenu";
+            CurrentViewingMenu = MainMenu;
+            CustomConsole.Debug("Build Menu");
+
+            UnityEngine.Object.Destroy(AgreementHub);
+            AssetBundleLoader.DespawnVoidBubbles();
+            GameObject.Destroy(coroutineHostObj);
+        }
+
 
         public static void Load()
 		{
@@ -438,50 +292,49 @@ namespace Colossal.Menu
 				bool isMouseHeld = Mouse.current.leftButton.isPressed;
 
 
-				if (!agreement)
-				{
-					if (AgreementHub == null)
-					{
-						LoadOnce();
-					}
+                if (!agreement)
+                {
+                    if (AgreementHub == null)
+                    {
+                        LoadOnce();
+                    }
 
-					bool joystickCondition = Controls.LeftJoystick() && Controls.RightJoystick() && !menutogglecooldown;
-					bool enterCondition = Keyboard.current.enterKey.wasPressedThisFrame;
-					if (joystickCondition || enterCondition)
-					{
-						menutogglecooldown = true;
-						agreement = true;
-						LoadOnce();
-						AssetBundleLoader.DespawnVoidBubbles();
-					}
+                    bool joystickCondition = Controls.LeftJoystick() && Controls.RightJoystick() && !menutogglecooldown;
+                    bool enterCondition = Keyboard.current.enterKey.wasPressedThisFrame;
+                    if (joystickCondition || enterCondition)
+                    {
+                        menutogglecooldown = true;
+                        agreement = true;
+                        LoadOnce();
+                    }
 
-					return;
-				}
+                    return;
+                }
 
 
-				bool Released = !isJoystickPressed && !isTriggerPressed && !isGripPressed && !isTabPressed && !isMouseClicked && menutogglecooldown;
+                bool Released = !isJoystickPressed && !isTriggerPressed && !isGripPressed && !isTabPressed && !isMouseClicked && menutogglecooldown;
 				if (Released)
 				{
 					menutogglecooldown = false;
 				}
 
 
-				if (GUICreator.panelsToDisable.Count > 0)
-				{
-				    for (int j = GUICreator.panelsToDisable.Count - 1; j >= 0; j--)
-				    {
-				        PanelElement panel = GUICreator.panelsToDisable[j];
-				        Animator panelAnimator = panel.RootObject.GetComponent<Animator>();
-				        AnimatorStateInfo stateInfo = panelAnimator.GetCurrentAnimatorStateInfo(0);
+                if (GUICreator.panelsToDisable.Count > 0)
+                {
+                    for (int j = GUICreator.panelsToDisable.Count - 1; j >= 0; j--)
+                    {
+                        PanelElement panel = GUICreator.panelsToDisable[j];
+                        Animator panelAnimator = panel.RootObject.GetComponent<Animator>();
+                        AnimatorStateInfo stateInfo = panelAnimator.GetCurrentAnimatorStateInfo(0);
 
-				        if (stateInfo.IsName(AssetBundleLoader.Menu_Out) && stateInfo.normalizedTime >= 1.0f)
-				        {
-				            panel.RootObject.SetActive(false);
-				            GUICreator.panelsToDisable.RemoveAt(j);
-				        }
-				    }
-				}
-				if ((isBothJoystickPressed || isTabPressed) && !menutogglecooldown)
+                        if (stateInfo.IsName(AssetBundleLoader.Menu_Out) && stateInfo.normalizedTime >= 1.0f)
+                        {
+                            panel.RootObject.SetActive(false);
+                            GUICreator.panelsToDisable.RemoveAt(j);
+                        }
+                    }
+                }
+                if ((isBothJoystickPressed || isTabPressed) && !menutogglecooldown)
 				{
 					menutogglecooldown = true;
 					GUIToggled = !GUIToggled;
@@ -490,227 +343,220 @@ namespace Colossal.Menu
 					{
 						MenuHub.active = !MenuHub.active;
 					}
-				    else
-					{
-					    foreach (PanelElement panel in GUICreator.openPanels)
-					    {
-					        Animator panelAnimator = panel.RootObject.GetComponent<Animator>();
+                    else
+                    {
+                        foreach (PanelElement panel in GUICreator.openPanels)
+                        {
+                            Animator panelAnimator = panel.RootObject.GetComponent<Animator>();
 
-					        if (GUIToggled)
-					        {
-					            panel.RootObject.SetActive(true);
+                            if (GUIToggled)
+                            {
+                                panel.RootObject.SetActive(true);
 
-					            panel.RootObject.transform.LookAt(GorillaLocomotion.GTPlayer.Instance.headCollider.transform.position);
-					            panel.RootObject.transform.Rotate(0, 180f, 0f, Space.Self);
+                                panel.RootObject.transform.LookAt(GorillaLocomotion.GTPlayer.Instance.headCollider.transform.position);
+                                panel.RootObject.transform.Rotate(0, 180f, 0f, Space.Self);
 
-					            panelAnimator.Play(AssetBundleLoader.Menu_In);
-					        }
-					        else
-					        {
-					            panelAnimator.Play(AssetBundleLoader.Menu_Out);
-					            GUICreator.panelsToDisable.Add(panel);
-					        }
-					    }
+                                panelAnimator.Play(AssetBundleLoader.Menu_In);
+                            }
+                            else
+                            {
+                                panelAnimator.Play(AssetBundleLoader.Menu_Out);
+                                GUICreator.panelsToDisable.Add(panel);
+                            }
+                        }
 
-					    AssetBundleLoader.hud.transform.position = Camera.main.transform.position;
-					}
-
-					UpdateMenuState(new MenuOption(), null, null);
+                        AssetBundleLoader.hud.transform.position = Camera.main.transform.position;
+                    }
+                    UpdateMenuState(new MenuOption(), null, null);
 				}
-				if (!GUIToggled)
-				{
-				    if (PointerLine.Instance != null) PointerLine.Instance.DisableLine();
-				    return;
-				}
+                if (!GUIToggled)
+                {
+                    if (PointerLine.Instance != null) PointerLine.Instance.DisableLine();
+                    return;
+                }
 
 
+                #region newUI
+                if (!PluginConfig.legacyUi)
+                {
+                    if (isTriggerPressed && !isVRModeActive)
+                    {
+                        isVRModeActive = true;
+                        hasReceivedMouseInput = false;
+                    }
 
-				#region newUI
-				if (!PluginConfig.legacyUi)
-				{
-				    if (isTriggerPressed && !isVRModeActive)
-					{
-					    isVRModeActive = true;
-					    hasReceivedMouseInput = false;
-					}
+                    if (isVRModeActive && Mouse.current != null &&
+                        (Mouse.current.leftButton.wasPressedThisFrame ||
+                         Mouse.current.rightButton.wasPressedThisFrame ||
+                         Mouse.current.delta.ReadValue().sqrMagnitude > 0))
+                    {
+                        hasReceivedMouseInput = true;
+                        isVRModeActive = false;
+                    }
 
-					if (isVRModeActive && Mouse.current != null &&
-					    (Mouse.current.leftButton.wasPressedThisFrame ||
-					     Mouse.current.rightButton.wasPressedThisFrame ||
-					     Mouse.current.delta.ReadValue().sqrMagnitude > 0))
-					{
-					    hasReceivedMouseInput = true;
-					    isVRModeActive = false;
-					}
+                    vrInputDetected = isVRModeActive && isTriggerPressed;
 
-					vrInputDetected = isVRModeActive && isTriggerPressed;
+                    PanelElement currentPanel = null;
+                    foreach (var panel in GUICreator.openPanels)
+                    {
+                        if (panel.RootObject.activeSelf)
+                        {
+                            currentPanel = panel;
+                            break;
+                        }
+                    }
+                    if (currentPanel == null)
+                    {
+                        if (PointerLine.Instance != null) PointerLine.Instance.DisableLine();
+                        return;
+                    }
 
-					PanelElement currentPanel = null;
-					foreach (var panel in GUICreator.openPanels)
-					{
-					    if (panel.RootObject.activeSelf)
-					    {
-					       currentPanel = panel;
-				           break;
-					    }
-					}
-					if (currentPanel == null)
-					{
-					    if (PointerLine.Instance != null) PointerLine.Instance.DisableLine();
-					    return;
-					}
+                    RaycastHit hit;
+                    bool worked = false;
+                    GameObject hitObject = null;
+                    string hitName = "";
+                    Ray rayUsed = new Ray();
 
+                    if (vrInputDetected)
+                    {
+                        Vector3 rayOrigin = GorillaLocomotion.GTPlayer.Instance.rightHand.controllerTransform.position - GorillaLocomotion.GTPlayer.Instance.rightHand.controllerTransform.up * 0.05f;
+                        Vector3 rayDirection = -GorillaLocomotion.GTPlayer.Instance.rightHand.controllerTransform.up;
+                        rayUsed = new Ray(rayOrigin, rayDirection);
+                        worked = Physics.Raycast(rayOrigin, rayDirection, out hit, float.PositiveInfinity, GUICreator.UILayerMask);
+                    }
+                    else
+                    {
+                        rayUsed = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+                        worked = Physics.Raycast(rayUsed, out hit, float.PositiveInfinity, GUICreator.UILayerMask);
+                    }
 
-					RaycastHit hit;
-					bool worked = false;
-					GameObject hitObject = null;
-					string hitName = "";
-					Ray rayUsed = new Ray();
+                    if (worked && hit.collider != null)
+                    {
+                        hitObject = hit.collider.gameObject;
+                        if (hitObject.layer != 14)
+                        {
+                            hitObject = null;
+                            worked = false;
+                        }
+                        else
+                        {
+                            hitName = hitObject.transform.parent != null ? hitObject.transform.parent.name : hitObject.name;
+                            foreach (var panel in GUICreator.openPanels)
+                            {
+                                if (panel.RootObject.activeSelf && IsObjectInPanel(hitObject, panel))
+                                {
+                                    currentPanel = panel;
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
+                    if (PointerLine.Instance != null)
+                    {
+                        PointerLine.Instance.UpdateLine(rayUsed, worked, hit, currentPanel);
+                    }
 
-					if (vrInputDetected)
-					{
-					    Vector3 rayOrigin = GorillaLocomotion.GTPlayer.Instance.rightHand.controllerTransform.position - GorillaLocomotion.GTPlayer.Instance.rightHand.controllerTransform.up * 0.05f;
-					    Vector3 rayDirection = -GorillaLocomotion.GTPlayer.Instance.rightHand.controllerTransform.up;
-					    rayUsed = new Ray(rayOrigin, rayDirection);
-					    worked = Physics.Raycast(rayOrigin, rayDirection, out hit, float.PositiveInfinity, GUICreator.UILayerMask);
-					}
-					else
-					{
-					    rayUsed = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-					    worked = Physics.Raycast(rayUsed, out hit, float.PositiveInfinity, GUICreator.UILayerMask);
-					}
+                    if ((vrInputDetected || isMouseHeld) && worked && hitObject != null && hitObject.name.Contains("grab") && !isGrabbing)
+                    {
+                        grabbedPanel = currentPanel;
+                        isGrabbing = true;
+                        PointerLine.ShortRangeMode = true;
+                    }
+                    if (isGrabbing && !vrInputDetected && !isMouseHeld)
+                    {
+                        isGrabbing = false;
+                        grabbedPanel = null;
+                        PointerLine.ShortRangeMode = false;
+                    }
+                    if (isGrabbing && grabbedPanel != null)
+                    {
+                        Vector3 targetPosition = PointerLine.lastPointerPos;
+                        targetPosition.y = Mathf.Max(targetPosition.y, 0.1f);
+                        grabbedPanel.RootObject.transform.position = targetPosition;
 
-					if (worked && hit.collider != null)
-					{
-					    hitObject = hit.collider.gameObject;
-					    if (hitObject.layer != 14)
-					    {
-					        hitObject = null;
-					        worked = false;
-					    }
-					    else
-					    {
-					        hitName = hitObject.transform.parent != null ? hitObject.transform.parent.name : hitObject.name;
-					        foreach (var panel in GUICreator.openPanels)
-					        {
-					            if (panel.RootObject.activeSelf && IsObjectInPanel(hitObject, panel))
-					            {
-					                currentPanel = panel;
-					                break;
-					            }
-					        }
-					    }
-					}
+                        Vector3 directionToPlayer = GorillaLocomotion.GTPlayer.Instance.headCollider.transform.position - grabbedPanel.RootObject.transform.position;
+                        Quaternion targetRotation = Quaternion.LookRotation(-directionToPlayer);
+                        grabbedPanel.RootObject.transform.rotation = targetRotation;
+                    }
 
+                    if ((vrInputDetected || isMouseHeld) && worked && hitObject != null && hitObject.name.Contains("x") && !isGrabbing)
+                    {
+                        Animator panelAnimator = currentPanel.RootObject.GetComponent<Animator>();
+                        panelAnimator.Play(AssetBundleLoader.Menu_Out);
+                        GUICreator.panelsToDisable.Add(currentPanel);
+                    }
 
-					if (PointerLine.Instance != null)
-					{
-					    PointerLine.Instance.UpdateLine(rayUsed, worked, hit, currentPanel);
-					}
+                    bool interactionTriggered = vrInputDetected ? isTriggerPressed : isMouseClicked;
+                    if (worked && interactionTriggered && !menutogglecooldown)
+                    {
+                        menutogglecooldown = true;
 
-					if ((vrInputDetected || isMouseHeld) && worked && hitObject != null && hitObject.name.Contains("grab") && !isGrabbing)
-					{
-					    grabbedPanel = currentPanel;
-					    isGrabbing = true;
-					    PointerLine.ShortRangeMode = true;
-					}
-					if (isGrabbing && !vrInputDetected && !isMouseHeld)
-					{
-					    isGrabbing = false;
-					    grabbedPanel = null;
-					    PointerLine.ShortRangeMode = false;
-					}
-					if (isGrabbing && grabbedPanel != null)
-					{
-					    Vector3 targetPosition = PointerLine.lastPointerPos;
-					    targetPosition.y = Mathf.Max(targetPosition.y, 0.1f);
-					    grabbedPanel.RootObject.transform.position = targetPosition;
+                        if (hitName.Contains("_"))
+                        {
+                            string[] parts = hitName.Split('_');
+                            if (parts.Length > 1 && int.TryParse(parts[1], out int index) && index >= 0 && index < currentPanel.CurrentViewingMenu.Length)
+                            {
+                                MenuOption option = currentPanel.CurrentViewingMenu[index];
+                                SelectedOptionIndex = index;
 
-					    Vector3 directionToPlayer = GorillaLocomotion.GTPlayer.Instance.headCollider.transform.position - grabbedPanel.RootObject.transform.position;
-					    Quaternion targetRotation = Quaternion.LookRotation(-directionToPlayer);
-					    grabbedPanel.RootObject.transform.rotation = targetRotation;
-					}
+                                if (hitName.StartsWith("bind_"))
+                                {
+                                    CustomBinding.Instance.StartListeningForBind(option.DisplayName);
+                                    return;
+                                }
+                                else if (hitName.StartsWith("Toggle_"))
+                                {
+                                    option.AssociatedBool = !option.AssociatedBool;
 
+                                    UpdateMenuState(option, null, "optionhit");
+                                    PanelElement.UpdatePanel(currentPanel, currentPanel.CurrentViewingMenu);
+                                }
+                                else if (hitName.StartsWith("Button_") || hitName.StartsWith("Slider_"))
+                                {
+                                    UpdateMenuState(option, null, "optionhit");
+                                    PanelElement.UpdatePanel(currentPanel, currentPanel.CurrentViewingMenu);
+                                }
+                                else if (hitName.StartsWith("Submenu_"))
+                                {
+                                    string newMenuState = option.DisplayName;
+                                    GUICreator.NewUI(newMenuState);
+                                }
+                                else if (hitName.StartsWith("SliderLArrow_") && option.stringsliderind > 0)
+                                {
+                                    option.stringsliderind--;
+                                    UpdateMenuState(option, null, "optionhit");
+                                    PanelElement.UpdatePanel(currentPanel, currentPanel.CurrentViewingMenu);
+                                }
+                                else if (hitName.StartsWith("SliderRArrow_") && option.stringsliderind < option.StringArray.Length - 1)
+                                {
+                                    option.stringsliderind++;
+                                    UpdateMenuState(option, null, "optionhit");
+                                    PanelElement.UpdatePanel(currentPanel, currentPanel.CurrentViewingMenu);
+                                }
+                            }
+                        }
+                    }
 
-					if ((vrInputDetected || isMouseHeld) && worked && hitObject != null && hitObject.name.Contains("x") && !isGrabbing)
-					{
-					    Animator panelAnimator = currentPanel.RootObject.GetComponent<Animator>();
-					    panelAnimator.Play(AssetBundleLoader.Menu_Out);
-					    GUICreator.panelsToDisable.Add(currentPanel);
-					}
+                    bool IsObjectInPanel(GameObject meow, PanelElement panel)
+                    {
+                        Transform currentTransform = meow.transform;
+                        while (currentTransform != null)
+                        {
+                            if (currentTransform.gameObject == panel.RootObject)
+                                return true;
+                            currentTransform = currentTransform.parent;
+                        }
+                        return false;
+                    }
 
+                    goto SkipLegacyControls;
 
-				    bool interactionTriggered = vrInputDetected ? isTriggerPressed : isMouseClicked;
-					if (worked && interactionTriggered && !menutogglecooldown)
-					{
-					    menutogglecooldown = true;
-
-					    if (hitName.Contains("_"))
-					    {
-					        string[] parts = hitName.Split('_');
-					        if (parts.Length > 1 && int.TryParse(parts[1], out int index) && index >= 0 && index < currentPanel.CurrentViewingMenu.Length)
-					        {
-					            MenuOption option = currentPanel.CurrentViewingMenu[index];
-					            SelectedOptionIndex = index;
-
-					            if (hitName.StartsWith("bind_"))
-					            {
-					                CustomBinding.Instance.StartListeningForBind(option.DisplayName);
-					                return;
-					            }
-					            else if (hitName.StartsWith("Toggle_"))
-					            {
-					                option.AssociatedBool = !option.AssociatedBool;
-
-					                UpdateMenuState(option, null, "optionhit");
-					                PanelElement.UpdatePanel(currentPanel, currentPanel.CurrentViewingMenu);
-					            }
-					            else if (hitName.StartsWith("Button_") || hitName.StartsWith("Slider_"))
-					            {
-					                UpdateMenuState(option, null, "optionhit");
-					                PanelElement.UpdatePanel(currentPanel, currentPanel.CurrentViewingMenu);
-					            }
-					            else if (hitName.StartsWith("Submenu_"))
-					            {
-					                string newMenuState = option.DisplayName;
-					                GUICreator.NewUI(newMenuState);
-					            }
-					            else if (hitName.StartsWith("SliderLArrow_") && option.stringsliderind > 0)
-					            {
-					                option.stringsliderind--;
-					                UpdateMenuState(option, null, "optionhit");
-					                PanelElement.UpdatePanel(currentPanel, currentPanel.CurrentViewingMenu);
-					            }
-					            else if (hitName.StartsWith("SliderRArrow_") && option.stringsliderind < option.StringArray.Length - 1)
-					            {
-					                option.stringsliderind++;
-					                UpdateMenuState(option, null, "optionhit");
-					                PanelElement.UpdatePanel(currentPanel, currentPanel.CurrentViewingMenu);
-					            }
-					        }
-					    }
-					}
-
-					bool IsObjectInPanel(GameObject meow, PanelElement panel)
-					{
-					    Transform currentTransform = meow.transform;
-					    while (currentTransform != null)
-					    {
-					        if (currentTransform.gameObject == panel.RootObject)
-					            return true;
-					        currentTransform = currentTransform.parent;
-					    }
-					    return false;
-					}
-
-					goto SkipLegacyControls;
-				}
-				#endregion
+                }
+                #endregion
 
 
-
-				if (MenuHub == null || MenuHubText == null)
+                if (MenuHub == null || MenuHubText == null)
 				{
 					goto SkipLegacyControls;
 				}
@@ -781,7 +627,7 @@ namespace Colossal.Menu
                     bool rightArrowPressed = current.rightArrowKey.wasPressedThisFrame;
                     if (isSlider && rightArrowPressed)
                     {
-                        bool isSpecialSlider = CurrentViewingMenu[SelectedOptionIndex].DisplayName == Settings[2].DisplayName || CurrentViewingMenu[SelectedOptionIndex].DisplayName == MusicPlayer[0].DisplayName; //|| CurrentViewingMenu[SelectedOptionIndex].DisplayName == Macro[0].DisplayName;
+                        bool isSpecialSlider = CurrentViewingMenu[SelectedOptionIndex].DisplayName == Settings[2].DisplayName || CurrentViewingMenu[SelectedOptionIndex].DisplayName == MusicPlayer[0].DisplayName || CurrentViewingMenu[SelectedOptionIndex].DisplayName == Macro[0].DisplayName;
                         if (isSpecialSlider)
                         {
                             int arrayLength = CurrentViewingMenu[SelectedOptionIndex].StringArray.Count();
@@ -961,9 +807,9 @@ namespace Colossal.Menu
 
             SkipLegacyControls:
 				// Update associated bools and slider indices (unchanged from original)
-				MainMenu[9].AssociatedBool = PluginConfig.Notifications;
-				MainMenu[10].AssociatedBool = PluginConfig.overlay;
-				MainMenu[11].AssociatedBool = PluginConfig.tooltips;
+				MainMenu[10].AssociatedBool = PluginConfig.Notifications;
+				MainMenu[11].AssociatedBool = PluginConfig.overlay;
+				MainMenu[12].AssociatedBool = PluginConfig.tooltips;
 
 				Movement[0].stringsliderind = PluginConfig.excelfly;
 				Movement[1].AssociatedBool = PluginConfig.tfly;
@@ -1081,7 +927,12 @@ namespace Colossal.Menu
 				MusicPlayer[5].AssociatedBool = PluginConfig.soundboard;
 				MusicPlayer[6].stringsliderind = PluginConfig.volume;
 
-				ColourSettings[0].stringsliderind = PluginConfig.MenuColour;
+                Macro[3].AssociatedBool = PluginConfig.recordmacro;
+                Macro[5].AssociatedBool = PluginConfig.autoplayproximity;
+                Macro[6].stringsliderind = PluginConfig.autoplaydistance;
+                Macro[7].stringsliderind = PluginConfig.macrolerpspeed;
+
+                ColourSettings[0].stringsliderind = PluginConfig.MenuColour;
 				ColourSettings[1].stringsliderind = PluginConfig.GhostColour;
 				ColourSettings[2].stringsliderind = PluginConfig.BeamColour;
 				ColourSettings[3].stringsliderind = PluginConfig.ESPColour;
@@ -1095,7 +946,6 @@ namespace Colossal.Menu
 				Dev[0].AssociatedBool = PluginConfig.devkickgun;
 				Dev[2].AssociatedBool = PluginConfig.devcrashgun;
 				Dev[4].AssociatedBool = PluginConfig.devmutegun;
-				Dev[5].AssociatedBool = PluginConfig.devunmutegun;
 				Dev[5].AssociatedBool = PluginConfig.devunmutegun;
 				Dev[8].AssociatedBool = PluginConfig.devalltohand;
 				Dev[9].AssociatedBool = PluginConfig.devplatformgun;
@@ -1116,11 +966,11 @@ namespace Colossal.Menu
                 ToolTips.HandToolTips(MenuState, SelectedOptionIndex);
                 Settings[2].StringArray = Configs.GetConfigFileNames();
                 MusicPlayer[0].StringArray = Music.GetMusicFileNames();
+                Macro[0].StringArray = MacroRecorder.GetMacroFileNames();
 
                 // Moving this to here for emote mod. (Breaks emote mods audio)
                 if (!PluginConfig.soundboard)
                     Music.stopsoundboard();
-
 
                 if (OperationType == "optionhit")
                 {
@@ -1178,10 +1028,11 @@ namespace Colossal.Menu
                             PanelElement.UpdatePanel(newPanelElement, options);
 
                             // Optional: Keep the old panel open instead of hiding it
-                            // if (activePanel != null) activePanel.RootObject.SetActive(false); // Remove this if you want multiple panels open
+                            if (activePanel != null) activePanel.RootObject.SetActive(false); // Remove this if you want multiple panels open
 
                             activePanel = newPanelElement; // Set the new panel as active (optional, depending on your needs)
                         }
+
 
                         MenuState = newMenuState;
                         CurrentViewingMenu = GUICreator.GetMenuOptions(newMenuState);
@@ -1240,27 +1091,29 @@ namespace Colossal.Menu
                         //Player
                         if (option.AssociatedString == "ghostself")
                         {
+                            GhostReactorManager grm = GameObject.Find("GhostReactorManager").GetComponent<GhostReactorManager>();
                             GREnemyChaser[] GREntity = Resources.FindObjectsOfTypeAll<GREnemyChaser>();
-                            if (PhotonNetwork.InRoom && GREntity != null && GREntity.Length > 0 && GhostReactorManager.Get(new GameEntity()) != null)
+                            if (PhotonNetwork.InRoom && GREntity != null && GREntity.Length > 0 && grm != null)
                             {
-                                if (!GhostReactorManager.Get(new GameEntity()).reactor.shiftManager.ShiftActive)
-                                    GhostReactorManager.Get(new GameEntity()).RequestShiftStartAuthority(true);
+                                if (!grm.reactor.shiftManager.ShiftActive)
+                                    grm.RequestShiftStartAuthority(true);
 
-                                GhostReactorManager.Get(new GameEntity()).RequestEnemyHitPlayer(GhostReactor.EnemyType.Chaser, GREntity[0].entity.id, GRPlayer.Get(PhotonNetwork.LocalPlayer.ActorNumber), VRRig.LocalRig.transform.position);
+                                grm.RequestEnemyHitPlayer(GhostReactor.EnemyType.Chaser, GREntity[0].entity.id, GRPlayer.Get(PhotonNetwork.LocalPlayer.ActorNumber), VRRig.LocalRig.transform.position);
                                 RPCProtection.SkiddedRPCProtection();
                             }
                         }
                         if (option.AssociatedString == "ghostreviveself")
                         {
+                            GhostReactorManager grm = GameObject.Find("GhostReactorManager").GetComponent<GhostReactorManager>();
                             GRReviveStation GRRevive = GameObject.Find("GhostReactorRoot/GhostReactorZone/GRReviveStation").GetComponent<GRReviveStation>();
-                            if (PhotonNetwork.InRoom && GRRevive != null && GhostReactorManager.Get(new GameEntity()) != null)
+                            if (PhotonNetwork.InRoom && GRRevive != null && grm != null)
                             {
                                 if (PhotonNetwork.LocalPlayer.IsMasterClient)
                                 {
-                                    if (!GhostReactorManager.Get(new GameEntity()).reactor.shiftManager.ShiftActive)
-                                        GhostReactorManager.Get(new GameEntity()).RequestShiftStartAuthority(false);
+                                    if (!grm.reactor.shiftManager.ShiftActive)
+                                        grm.RequestShiftStartAuthority(false);
 
-                                    GhostReactorManager.Get(new GameEntity()).RequestPlayerRevive(GRRevive, GRPlayer.Get(PhotonNetwork.LocalPlayer.ActorNumber));
+                                    grm.RequestPlayerRevive(GRRevive, GRPlayer.Get(PhotonNetwork.LocalPlayer.ActorNumber));
 
                                     RPCProtection.SkiddedRPCProtection();
                                 }
@@ -1474,7 +1327,7 @@ namespace Colossal.Menu
                             Configs.SaveConfig();
 
                         if (option.AssociatedString == "playmusic")
-                            Music.LoadMusic($"{Configs.musicPath}\\{MusicPlayer[0].StringArray[MusicPlayer[0].stringsliderind]}.mp3");
+                            Plugin.test.StartCoroutine(Music.LoadMusic($"{Configs.musicPath}\\{MusicPlayer[0].StringArray[MusicPlayer[0].stringsliderind]}.mp3"));
                         if (option.AssociatedString == "stopmusic" && Music.MusicAudio.isPlaying)
                         {
                             if (PluginConfig.soundboard)
@@ -1490,15 +1343,30 @@ namespace Colossal.Menu
                                 System.Random rand = new System.Random();
                                 string randomFile = musicFiles[rand.Next(musicFiles.Length)];
 
-                                Music.LoadMusic($"{Configs.musicPath}\\{randomFile}.mp3");
+                                Plugin.test.StartCoroutine(Music.LoadMusic($"{Configs.musicPath}\\{randomFile}.mp3"));
                             }
+                        }
+
+                        // Macro
+                        if(option.AssociatedString == "loadmacro")
+                        {
+                            MacroRecorder.StartPlayback(Macro[0].stringsliderind);
+                        }
+                        if (option.AssociatedString == "stopmacro")
+                        {
+                            MacroRecorder.StopPlayback();
+                        }
+                        if (option.AssociatedString == "deletemacro")
+                        {
+                            MacroRecorder.DeleteMacro();
                         }
 
 
                         // Settings
                         if (option.AssociatedString == "logout")
                         {
-                            Application.Quit();
+                            Notifacations.SendNotification($"<color=red>[LOGOUT]</color> {PhotonNetwork.LocalPlayer.NickName} Why did you try ?? its free");
+                            PhotonNetwork.Disconnect();
                             PlayFabClientAPI.ForgetAllCredentials();
                         }
 
@@ -1562,7 +1430,7 @@ namespace Colossal.Menu
                             break;
                     }
 
-                    Camera specificCamera = GameObject.Find("Player Objects/Player VR Controller/GorillaPlayer/TurnParent/Main Camera").GetComponent<Camera>();
+                    Camera specificCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
                     switch (PluginConfig.AntiScreenShare)
                     {
                         case 0:

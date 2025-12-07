@@ -114,8 +114,8 @@ namespace Colossal.Mods
                                 Quaternion rotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
                                 nameTagText.transform.rotation = rotation;
 
-                                Vector3 scale = size * Vector3.Distance(Camera.main.transform.position, vrrig.transform.position) / 10;
-                                nameTagText.transform.localScale = new Vector3(Mathf.Max(scale.x, 4), Mathf.Max(scale.y, 4), Mathf.Max(scale.z, 4));
+                                //Vector3 scale = size * Vector3.Distance(Camera.main.transform.position, vrrig.transform.position) / 10;
+                                //nameTagText.transform.localScale = new Vector3(Mathf.Max(scale.x, 4), Mathf.Max(scale.y, 4), Mathf.Max(scale.z, 4));
                             }
                             else
                             {

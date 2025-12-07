@@ -1,18 +1,19 @@
 ﻿
 using Colossal.Menu;
+using Colossal.Notifacation;
+using CSCore;
+using Photon.Pun;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.Audio;
-using CSCore;
-using System.Net;
-using Colossal.Notifacation;
-using Photon.Pun;
+using UnityEngine.Networking;
 
 namespace Colossal
 {
@@ -75,72 +76,78 @@ namespace Colossal
             return result;
         }
 
-        public static void LoadMusic(string filePath)
+        public static IEnumerator LoadMusic(string filePath)
         {
-            try
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
-                Debug.Log("[COLOSSAL] Loading Music");
-
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        string extension = System.IO.Path.GetExtension(filePath).ToLower();
-                        AudioType audioType = GetAudioTypeFromExtension(extension);
-
-                        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file:///" + filePath, audioType);
-                        www.SendWebRequest();
-
-                        // Wait for the request to complete
-                        while (!www.isDone)
-                        {
-                        }
-
-                        if (www.result == UnityWebRequest.Result.Success)
-                        {
-                            audioclip = DownloadHandlerAudioClip.GetContent(www);
-                            if (audioclip != null)
-                            {
-                                MusicAudio.clip = audioclip;
-
-                                if (!MusicAudio.isPlaying)
-                                {
-                                    if(PluginConfig.soundboard)
-                                        startsoundboard();
-                                    MusicAudio.Play();
-                                }
-                                else
-                                {
-                                    if (PluginConfig.soundboard)
-                                        startsoundboard();
-                                    MusicAudio.Stop();
-                                    MusicAudio.Play();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogError("Error loading audio file: " + www.error);
-                        }
-
-                        Notifacations.SendNotification($"<color=blue>[MUSIC]</color> PLAYING : {Menu.Menu.MusicPlayer[0].StringArray[Menu.Menu.MusicPlayer[0].stringsliderind]}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError("Error loading music: " + ex.Message);
-                        Notifacations.SendNotification($"<color=#FFA500>[MUSIC]</color> ERROR : {filePath}");
-                    }
-                }
-                else
-                {
-                    Notifacations.SendNotification($"<color=#FFA500>[MUSIC]</color> ERROR : {filePath}");
-                }
+                Debug.LogError("[COLOSSAL] Music file not found: " + filePath);
+                Notifacations.SendNotification("<color=#FFA500>[MUSIC]</color> ERROR: File not found");
+                yield break;
             }
-            catch (Exception ex)
+
+            //Debug.Log("[COLOSSAL] Loading Music: " + filePath);
+
+            string ext = Path.GetExtension(filePath).ToLower();
+            AudioType audioType = GetAudioTypeFromExtension(ext);
+
+            if (audioType == AudioType.UNKNOWN)
             {
-                Notifacations.SendNotification($"<color=#FFA500>[MUSIC]</color> ERROR : {filePath}");
+                Debug.LogError("[COLOSSAL] Unsupported audio format: " + ext);
+                yield break;
+            }
+
+            string fullPath = Path.GetFullPath(filePath).Replace("\\", "/");
+            string url = "file:///" + fullPath;
+
+            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, audioType))
+            {
+                Debug.Log("[COLOSSAL] Sending request...");
+                yield return www.SendWebRequest(); 
+
+                if (!www.isDone)
+                {
+                    //Debug.LogError("[COLOSSAL] UnityWebRequest finished=false but coroutine continued");
+                    yield break;
+                }
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("[COLOSSAL] Audio load error: " + www.error);
+                    Notifacations.SendNotification("<color=#FFA500>[MUSIC]</color> ERROR LOADING");
+                    yield break;
+                }
+
+                AudioClip clip;
+                try
+                {
+                    clip = DownloadHandlerAudioClip.GetContent(www);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError("[COLOSSAL] ERROR: " + ex.Message);
+                    yield break;
+                }
+
+                if (clip == null)
+                {
+                    yield break;
+                }
+
+                audioclip = clip;
+                MusicAudio.clip = clip;
+
+                if (PluginConfig.soundboard)
+                    startsoundboard();
+
+                MusicAudio.Stop();
+                MusicAudio.Play();
+
+                Notifacations.SendNotification(
+                    $"<color=blue>[MUSIC]</color> PLAYING : {Menu.Menu.MusicPlayer[0].StringArray[Menu.Menu.MusicPlayer[0].stringsliderind]}"
+                );
             }
         }
+
 
         private static AudioType GetAudioTypeFromExtension(string extension)
         {

@@ -157,6 +157,12 @@ namespace Colossal.Menu
 
         public static bool invertedControls = false;
 
+        // Macro
+        public static bool recordmacro = false; public static string recordmacro_bind = "";
+        public static bool autoplayproximity = false;
+        public static int autoplaydistance = 0;
+        public static int macrolerpspeed = 0;
+
         // Dev
         public static bool devkickgun = false;
         public static bool devcrashgun = false;

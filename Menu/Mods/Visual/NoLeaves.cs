@@ -7,9 +7,9 @@ namespace Colossal.Mods
 {
     public class NoLeaves : MonoBehaviour
     {
-        private List<GameObject> leaves = new List<GameObject>();
+        public List<GameObject> leaves = new List<GameObject>();
 
-        private void Start()
+        public void Start()
         {
             GameObject forest = GameObject.Find("Environment Objects/LocalObjects_Prefab/Forest");
             if (forest == null)
@@ -26,12 +26,12 @@ namespace Colossal.Mods
             }
         }
 
-        private void Update()
+        public void Update()
         {
             foreach (GameObject leaf in leaves)
             {
                 if (leaf != null)
-                    leaf.SetActive(PluginConfig.NoLeaves);
+                    leaf.SetActive(!PluginConfig.NoLeaves);
             }
         }
     }

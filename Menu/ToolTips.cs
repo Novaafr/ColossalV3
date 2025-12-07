@@ -54,6 +54,7 @@ namespace Colossal.Menu
             $"<color={Menu.MenuColour}>Custom</color>\nScale gravity",
             $"<color={Menu.MenuColour}>L Or R Grip</color>\nClimb Gorillas",
             $"<color={Menu.MenuColour}>Passive</color>\nFly away from tagged players",
+            $"<color={Menu.MenuColour}>Passive</color>\nNear Pulse Distace",
             $"<color={Menu.MenuColour}>R Joystick > L Trigger & R Trigger</color>\nScale yourself",
             $"<color={Menu.MenuColour}>Custom</color>\nPhase through walls",
             $"<color={Menu.MenuColour}>Passive</color>\nMakes you unable to move",

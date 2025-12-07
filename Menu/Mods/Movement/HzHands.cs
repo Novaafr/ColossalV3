@@ -17,7 +17,8 @@ namespace Colossal.Mods
 
             if (Setting == 0)
             {
-                GorillaLocomotion.GTPlayer.Instance.velocityHistorySize = 6;
+                GorillaLocomotion.GTPlayer.Instance.velocityHistorySize = 9; // 6 - breaks make it 9 for defualt
+                GorillaLocomotion.GTPlayer.Instance.InitializeValues();
                 Destroy(this.GetComponent<HzHands>());
             }
             else

@@ -94,6 +94,9 @@ namespace Colossal.Patches
         private void Start()
         {
             PingCoroutine = StartCoroutine(Ping());
+            instance = this;
+            Debug.Log("Testing");
+            _ = FetchUserCountAsync();
         }
 
         private IEnumerator Ping()

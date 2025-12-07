@@ -5,13 +5,15 @@ namespace Colossal.Menu
     public class PointerLine : MonoBehaviour
     {
         private LineRenderer lineRenderer;
-        public static Vector3 lastPointerPos; // For smoothing
-        private GameObject lockedElement; // For locking
-        private const float smoothingSpeed = 15f;//  Smoothing factor
-        private const float lockDistance = 0.05f; // Distance to lock (world units)
-        private const float unlockDistance = 0.2f; // Distance to unlock
-        private const float shortRangeDistance = 1f; // Short range limit
-        private const float longRangeDistance = 512f; // Default long range limit
+
+        public static Vector3 lastPointerPos = Vector3.zero;
+        private GameObject lockedElement;
+
+        private const float smoothingSpeed = 15f;
+        private const float lockDistance = 0.05f;
+        private const float unlockDistance = 0.2f;
+        private const float shortRangeDistance = 1f;
+        private const float longRangeDistance = 512f;
 
         public static PointerLine Instance { get; private set; }
         public static bool ShortRangeMode { get; set; } = false;
@@ -29,64 +31,79 @@ namespace Colossal.Menu
                 return;
             }
 
-            // Initialize LineRenderer
             lineRenderer = gameObject.AddComponent<LineRenderer>();
             lineRenderer.startWidth = 0.01f;
             lineRenderer.endWidth = 0.01f;
             lineRenderer.positionCount = 2;
-            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
 
-            // Set initial color (updated later in UpdateLine)
-            PanelElement currentPanel = GetActivePanel();
-            if (currentPanel != null)
+            // Avoid Shader.Find null issues
+            Shader spriteShader = Shader.Find("Sprites/Default");
+            lineRenderer.material = spriteShader != null
+                ? new Material(spriteShader)
+                : new Material(Shader.Find("Unlit/Color"));
+
+            PanelElement activePanel = GetActivePanel();
+            if (activePanel != null && activePanel.grabInstance != null)
             {
-                lineRenderer.startColor = currentPanel.grabInstance.GetComponent<Renderer>().material.color;
-                lineRenderer.endColor = currentPanel.grabInstance.GetComponent<Renderer>().material.color;
+                var r = activePanel.grabInstance.GetComponent<Renderer>();
+                if (r != null)
+                {
+                    Color c = r.material.color;
+                    lineRenderer.startColor = c;
+                    lineRenderer.endColor = c;
+                }
             }
+
             lineRenderer.enabled = false;
-            CustomConsole.Debug("Initialized PointerLine");
+            CustomConsole.Debug("PointerLine initialized");
         }
 
         public void UpdateLine(Ray ray, bool rayHit, RaycastHit hit, PanelElement panel)
         {
             if (lineRenderer == null || panel == null)
-            {
-                CustomConsole.Error("LineRenderer or panel is null in PointerLine!");
                 return;
-            }
 
             lineRenderer.enabled = true;
             lineRenderer.SetPosition(0, ray.origin);
 
-            // Update line color based on current panel
-            lineRenderer.startColor = panel.grabInstance.GetComponent<Renderer>().material.color;
-            lineRenderer.endColor = panel.grabInstance.GetComponent<Renderer>().material.color;
+            // Safe color assignment
+            if (panel.grabInstance != null)
+            {
+                var r = panel.grabInstance.GetComponent<Renderer>();
+                if (r != null)
+                {
+                    Color c = r.material.color;
+                    lineRenderer.startColor = c;
+                    lineRenderer.endColor = c;
+                }
+            }
+
+            float maxDist = ShortRangeMode ? shortRangeDistance : longRangeDistance;
 
             Vector3 targetPos;
-            float maxDistance = ShortRangeMode ? shortRangeDistance : longRangeDistance;
 
-            if (rayHit && Vector3.Distance(ray.origin, hit.point) <= maxDistance)
+            // Ray hit logic
+            if (rayHit && hit.collider != null && Vector3.Distance(ray.origin, hit.point) <= maxDist)
             {
                 targetPos = hit.point;
             }
             else
             {
-                Plane menuPlane = new Plane(-panel.RootObject.transform.forward, panel.RootObject.transform.position); // Face player
-                if (menuPlane.Raycast(ray, out float distance) && distance <= maxDistance)
-                {
-                    targetPos = ray.GetPoint(distance);
-                }
+                // Menu plane fallback
+                Plane menuPlane = new Plane(-panel.RootObject.transform.forward,
+                                            panel.RootObject.transform.position);
+
+                if (menuPlane.Raycast(ray, out float planeDist) && planeDist <= maxDist)
+                    targetPos = ray.GetPoint(planeDist);
                 else
-                {
-                    targetPos = ray.origin + ray.direction * maxDistance;
-                }
+                    targetPos = ray.origin + ray.direction * maxDist;
             }
 
-             // Locking logic - only lock to grab, not UI elements
+            // Locking logic
             if (lockedElement != null)
             {
-                float distanceToLocked = Vector3.Distance(targetPos, lockedElement.transform.position);
-                if (distanceToLocked > unlockDistance)
+                float dist = Vector3.Distance(targetPos, lockedElement.transform.position);
+                if (dist > unlockDistance)
                 {
                     lockedElement = null;
                 }
@@ -95,20 +112,22 @@ namespace Colossal.Menu
                     targetPos = lockedElement.transform.position;
                 }
             }
-            else if (rayHit && Vector3.Distance(ray.origin, hit.point) <= maxDistance)
+            else if (rayHit && hit.collider != null)
             {
-                GameObject hitObject = hit.collider.gameObject;
-                string hitName = hitObject.name;
+                GameObject hitObj = hit.collider.gameObject;
 
-                // Only lock to grab element
-                if (hitName.Contains("grab") && Vector3.Distance(targetPos, hitObject.transform.position) < lockDistance)
+                if (hitObj.name.Contains("grab"))
                 {
-                    lockedElement = hitObject;
-                    targetPos = lockedElement.transform.position;
+                    float toObj = Vector3.Distance(targetPos, hitObj.transform.position);
+                    if (toObj < lockDistance)
+                    {
+                        lockedElement = hitObj;
+                        targetPos = lockedElement.transform.position;
+                    }
                 }
             }
 
-            // Smoothing
+            // Smooth pointer end
             lastPointerPos = Vector3.Lerp(lastPointerPos, targetPos, Time.deltaTime * smoothingSpeed);
             lineRenderer.SetPosition(1, lastPointerPos);
         }
@@ -116,25 +135,19 @@ namespace Colossal.Menu
         public void DisableLine()
         {
             if (lineRenderer != null)
-            {
                 lineRenderer.enabled = false;
-            }
         }
 
-        public GameObject GetLockedElement()
-        {
-            return lockedElement;
-        }
+        public GameObject GetLockedElement() => lockedElement;
 
         private PanelElement GetActivePanel()
         {
-            foreach (var panel in GUICreator.openPanels)
+            foreach (var p in GUICreator.openPanels)
             {
-                if (panel.RootObject.activeSelf)
-                {
-                    return panel;
-                }
+                if (p != null && p.RootObject != null && p.RootObject.activeSelf)
+                    return p;
             }
+
             return null;
         }
     }

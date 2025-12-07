@@ -31,11 +31,11 @@ namespace Colossal.Mods
 
                 if (ControlsV2.GetControl(rightBind))
                 {
-                    GorillaTagger.Instance.rigidbody.velocity -= right.GetVelocity() / 8 * GorillaLocomotion.GTPlayer.Instance.scale;
+                    GorillaTagger.Instance.rigidbody.linearVelocity -= right.GetVelocity() / 8 * GorillaLocomotion.GTPlayer.Instance.scale;
                 }
                 if (ControlsV2.GetControl(leftBind))
                 {
-                    GorillaTagger.Instance.rigidbody.velocity -= left.GetVelocity() / 8 * GorillaLocomotion.GTPlayer.Instance.scale;
+                    GorillaTagger.Instance.rigidbody.linearVelocity -= left.GetVelocity() / 8 * GorillaLocomotion.GTPlayer.Instance.scale;
                 }
             }
             else

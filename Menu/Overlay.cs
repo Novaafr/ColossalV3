@@ -28,8 +28,8 @@ namespace Colossal.Menu
         public static GameObject OverlayHubRoom;
         public static Text OverlayHubTextRoom;
 
-        //private static PanelElement activePanel;
-        //private static PanelElement activePanel2;
+        private static PanelElement activePanel;
+        private static PanelElement activePanel2;
 
         private bool ExtraDebugUselessStuff = false; // just for like dev stuff to see if some mods work or not
 
@@ -63,7 +63,7 @@ namespace Colossal.Menu
                 if (!ExtraDebugUselessStuff)
                     OverlayHubText.text = $"<color={Menu.MenuColour}>Ping: </color>{PhotonNetwork.GetPing()}\n<color={Menu.MenuColour}>FPS: </color>{fps.ToString("F2")}\n<color={Menu.MenuColour}>Play Time: </color>{Plugin.playtimestring}";
                 else
-                    OverlayHubText.text = $"<color={Menu.MenuColour}>Ping: </color>{PhotonNetwork.GetPing()}\n<color={Menu.MenuColour}>FPS: </color>{fps.ToString("F2")}\n<color={Menu.MenuColour}>Play Time: </color>{Plugin.playtimestring}\n<color={Menu.MenuColour}>Max Speed: </color>{GorillaLocomotion.GTPlayer.Instance.maxJumpSpeed}\n<color={Menu.MenuColour}>Current Speed: </color>{GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.velocity.magnitude}\n<color={Menu.MenuColour}>Master: </color>{PhotonNetwork.IsMasterClient}\n<color={Menu.MenuColour}>Mode: </color>{GorillaComputer.instance.currentGameModeText}";
+                    OverlayHubText.text = $"<color={Menu.MenuColour}>Ping: </color>{PhotonNetwork.GetPing()}\n<color={Menu.MenuColour}>FPS: </color>{fps.ToString("F2")}\n<color={Menu.MenuColour}>Play Time: </color>{Plugin.playtimestring}\n<color={Menu.MenuColour}>Max Speed: </color>{GorillaLocomotion.GTPlayer.Instance.maxJumpSpeed}\n<color={Menu.MenuColour}>Current Speed: </color>{GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity.magnitude}\n<color={Menu.MenuColour}>Master: </color>{PhotonNetwork.IsMasterClient}\n<color={Menu.MenuColour}>Mode: </color>{GorillaComputer.instance.currentGameModeText}";
             }
             else if (OverlayHub != null && OverlayHubText != null && OverlayHubRoom != null && OverlayHubTextRoom != null)
             {

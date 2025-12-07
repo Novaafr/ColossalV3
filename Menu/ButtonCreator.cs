@@ -1,4 +1,5 @@
 ﻿﻿using Colossal;
+using Colossal.Patches;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -34,7 +35,7 @@ namespace Colossal.Menu
             buttonTextObj.transform.SetParent(ButtonObj.transform);
             Text ButtonText = buttonTextObj.AddComponent<Text>();
             ButtonText.fontSize = 10;
-            //ButtonText.font = Plugin.gtagfont;
+            ButtonText.font = BepInPatcher.gtagfont;
             ButtonText.rectTransform.sizeDelta = new Vector2(260, 160);
             ButtonText.rectTransform.localScale = new Vector3(0.01f, 0.01f, 1f);
             ButtonText.material = mat;
@@ -95,7 +96,7 @@ namespace Colossal.Menu
                         break;
 
                     case ButtonType.Select:
-                        if (Menu.CurrentViewingMenu[Menu.SelectedOptionIndex]._type == "STRINGslider")
+                        if (Menu.CurrentViewingMenu[Menu.SelectedOptionIndex]._type == BepInPatcher.sliderthingy)
                         {
                             if (!Menu.inputcooldown)
                             {
