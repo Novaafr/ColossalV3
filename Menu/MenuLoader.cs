@@ -166,7 +166,7 @@ namespace Colossal
             Menu.Menu.Computer[4] = new MenuOption { DisplayName = "Join MODS", _type = "buttonthingy", AssociatedString = "join MODS" };
             Menu.Menu.Computer[5] = new MenuOption { DisplayName = "Join MOD", _type = "buttonthingy", AssociatedString = "join MOD" };
             Menu.Menu.Computer[6] = new MenuOption { DisplayName = "Join:", _type = "buttonthingy", AssociatedString = "join", extra = "roomtojoin" };
-            Menu.Menu.Computer[7] = new MenuOption { DisplayName = "Join CCMV2 Only", _type = "buttonthingy", AssociatedString = "join CCMV2 Only" };
+            Menu.Menu.Computer[7] = new MenuOption { DisplayName = "Join CCMV3 Only", _type = "buttonthingy", AssociatedString = "join CCMV3 Only" };
             Menu.Menu.Computer[8] = new MenuOption { DisplayName = "Gamemodes", _type = "submenuthingy", AssociatedString = "Gamemodes" };
             Menu.Menu.Computer[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
@@ -207,7 +207,7 @@ namespace Colossal
             Menu.Menu.Info[0] = new MenuOption { DisplayName = "PlayerList", _type = "buttonthingy" };
             Menu.Menu.Info[1] = new MenuOption { DisplayName = "GTC Ranked Codes", _type = "buttonthingy" };
             Menu.Menu.Info[2] = new MenuOption { DisplayName = "IIDK Menu Users", _type = "buttonthingy" };
-            Menu.Menu.Info[3] = new MenuOption { DisplayName = "CCMV2 Menu Users", _type = "buttonthingy" };
+            Menu.Menu.Info[3] = new MenuOption { DisplayName = "CCMV3 Menu Users", _type = "buttonthingy" };
             Menu.Menu.Info[4] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
             Menu.Menu.MusicPlayer = new MenuOption[8];

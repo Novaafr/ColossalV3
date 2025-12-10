@@ -1306,9 +1306,9 @@ namespace Colossal.Menu
                                 Destroy(Plugin.holder.GetComponent<BadApple>());
                             }
                         }
-                        if (option.AssociatedString == "join CCMV2 Only")
+                        if (option.AssociatedString == "join CCMV3 Only")
                         {
-                            PhotonNetworkController.Instance.AttemptToJoinSpecificRoom("@CCMV2@", JoinType.Solo);
+                            PhotonNetworkController.Instance.AttemptToJoinSpecificRoom("@CCMV3@", JoinType.Solo);
                         }
                         if (option.AssociatedString.Contains("cgamemode"))
                         {

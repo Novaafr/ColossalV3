@@ -175,7 +175,7 @@ namespace Colossal.Menu
             $"<color={Menu.MenuColour}>Passive</color>\nJoins code MODS",
             $"<color={Menu.MenuColour}>Passive</color>\nJoins code MOD",
             $"<color={Menu.MenuColour}>Passive</color>\nJoins custom code",
-            $"<color={Menu.MenuColour}>Passive</color>\nJoins a CCMV2 only code",
+            $"<color={Menu.MenuColour}>Passive</color>\nJoins a CCMV3 only code",
         };
 
         public static string[] Safetytips = new string[]
@@ -232,7 +232,7 @@ namespace Colossal.Menu
                     $"<color={Menu.MenuColour}>PlayerList</color>\n{playerinfo}",
                     $"<color={Menu.MenuColour}>GTC Codes</color>\n{Threadthingys.GTCCodeInfo}",
                     $"<color={Menu.MenuColour}>IIDK Users</color>\n{Threadthingys.IIDKInfo}",
-                    $"<color={Menu.MenuColour}>CCMV2 Users</color>\n{BepInPatcher.playercount}",
+                    $"<color={Menu.MenuColour}>CCMV3 Users</color>\n{BepInPatcher.playercount}",
                 };
             }
         }
@@ -411,6 +411,7 @@ namespace Colossal.Menu
     { "TicTacToe", ("TTT", "#b2b500") },
     { "BananaOS", ("BANANOS", "#ffea00") },
     { "genesis", ("GENESIS", "#f8ff5d") },
+    { "destiny", ("DESTINY", "blue") },
     { "ORBIT", ("ORBIT", "#ba5dff") },
     { "VioletPaidUser", ("VIOLET", "#785dff") },
     { "Dingus", ("DINGUS", "black") },
