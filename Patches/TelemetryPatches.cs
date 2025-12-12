@@ -45,14 +45,14 @@ namespace Colossal.Patches
         }
     }
 
-    [HarmonyPatch(typeof(LckTelemetry), "SendTelemetry")]
+    /*[HarmonyPatch(typeof(ILckTelemetryClient), "SendTelemetry")]
     public class TelemetryPatch5
     {
-        private static bool Prefix(TelemetryEvent eventData)
+        private static bool Prefix(LckTelemetryEvent lckTelemetryEvent)
         {
             return false;
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(VRRig), "IncrementRPC", typeof(PhotonMessageInfoWrapped), typeof(string))]
     public class NoIncrementRPC
