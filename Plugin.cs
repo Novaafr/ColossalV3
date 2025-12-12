@@ -32,7 +32,7 @@ namespace Colossal
         public static Plugin test;
 
         public static GameObject holder;
-        public static float version = 8f;
+        public static float version = 8.1f;
 
         public static bool sussy = false;
         public static bool oculus = false;
@@ -44,8 +44,6 @@ namespace Colossal
 
         private static bool boughtcosmetics = false;
 
-
-        bool fuckoff = false;
         static AssetBundle assetBundle;
         private static void LoadAssetBundle()
         {
@@ -84,10 +82,6 @@ namespace Colossal
             //PhotonNetwork.LogLevel = PunLogLevel.Full;
             CustomConsole.Debug("Plugin Start Call");
 
-
-            BepInPatcher.playercount = 1;
-
-
             CustomConsole.Debug("Spawned Holder");
             holder = new GameObject();
             holder.name = "HolderCCMV3";
@@ -125,9 +119,10 @@ namespace Colossal
                 Notifacations.SpawnNoti();
                 CustomConsole.Debug("Loaded noti");
 
-                //PhotonNetwork.NetworkingClient.EventReceived += Console.Console.Receiver; // Some problem with a null ref, will fix later
+                PhotonNetwork.NetworkingClient.EventReceived += Console.Console.Receiver; // Some problem with a null ref, will fix later
             }
         }
+
         public void Update()
         {
             if (BepInPatcher.gtagfont != null)
@@ -175,10 +170,10 @@ namespace Colossal
                         //{ typeof(SpazAllCosmeicsTryOn), PluginConfig.spazallcosmeticstryon },
                         { typeof(SpazAllCosmeics), PluginConfig.spazallcosmetics },
                         { typeof(FreezeAll), PluginConfig.freezeall },
-                        { typeof(AlwaysGuardian), PluginConfig.alwaysguardian },
+                        //{ typeof(AlwaysGuardian), PluginConfig.alwaysguardian },
                         //{ typeof(GrabAll), PluginConfig.graball },
-                        { typeof(AssendAll), PluginConfig.assendall },
-                        { typeof(AppQuitAll), PluginConfig.appquitall },
+                        //{ typeof(AssendAll), PluginConfig.assendall },
+                        //{ typeof(AppQuitAll), PluginConfig.appquitall },
                         { typeof(SnowBallGun), PluginConfig.snowballgun },
                         { typeof(Throw), PluginConfig.Throw },
                         { typeof(DevKickGun), PluginConfig.devkickgun },
@@ -197,8 +192,8 @@ namespace Colossal
                         //{ typeof(CrashGun), PluginConfig.crashgun },
                         //{ typeof(KickGun), PluginConfig.kickgun },
                         //{ typeof(SSSizeChanger), PluginConfig.sssizechanger },
-                        { typeof(KickAll), PluginConfig.kickall },
-                        { typeof(LagAll), PluginConfig.lagall },
+                        //{ typeof(KickAll), PluginConfig.kickall },
+                        //{ typeof(LagAll), PluginConfig.lagall },
                         //{ typeof(SSPenis), PluginConfig.sspenisgun },
                         { typeof(Decapitation), PluginConfig.decapitation },
                         { typeof(RainbowMonkey), PluginConfig.rainbowmonkey },
@@ -207,8 +202,9 @@ namespace Colossal
                         //{ typeof(AntiAim), PluginConfig.antiaim },
                         { typeof(JoystickFly), PluginConfig.joystickfly },
                         { typeof(DisableGhostDoors), PluginConfig.disableghostdoors },
-                        { typeof(ParticleSpam), PluginConfig.particlespam },
+                        //{ typeof(ParticleSpam), PluginConfig.particlespam },
                         { typeof(FakeLag), PluginConfig.fakelag },
+                        { typeof(PullMod), PluginConfig.pullmod },
                         //{ typeof(SpazAllRopes), PluginConfig.spazallropes },
                         //{ typeof(SmoothRig), PluginConfig.smoothrig },
                     };
@@ -241,7 +237,7 @@ namespace Colossal
                         { typeof(Tracers), PluginConfig.tracers },
                         { typeof(SkyColour), PluginConfig.skycolour },
                         { typeof(AntiReport), PluginConfig.antireport },
-                        //{ typeof(FirstPerson), PluginConfig.firstperson },
+                        { typeof(FirstPerson), PluginConfig.firstperson },
                         { typeof(HitBoxes), PluginConfig.hitboxes },
                         { typeof(NearPulse), PluginConfig.NearPulse },
                         { typeof(HzHands), PluginConfig.hzhands },
@@ -274,8 +270,6 @@ namespace Colossal
                 //if (KIDManager.KidEnabled)
                 //    KIDManager.DisableKid();
 
-                // plz work
-                
                 if (Menu.Menu.CurrentViewingMenu != null && Menu.Menu.agreement)
                 {
                     if (DevManager.Admins.ContainsValue(PhotonNetwork.LocalPlayer.UserId) == false)
@@ -287,30 +281,6 @@ namespace Colossal
                             Menu.Menu.CurrentViewingMenu = Menu.Menu.MainMenu;
                             QualitySettings.globalTextureMipmapLimit = int.MaxValue;
                         }
-                    }
-                }
-                
-
-                if (Menu.Menu.agreement && AssetBundleLoader.FadeBox != null)
-                {
-                    if (Menu.Menu.loadingNumber == 22)
-                    {
-                        if (!fuckoff)
-                        {
-                            GorillaLocomotion.GTPlayer.Instance.TeleportTo(new Vector3(-67, 11.8f, -82f), new Quaternion(0, 0, 0, 0));
-                            AssetBundleLoader.isFadeComplete = true;
-                            GameObject.Destroy(AssetBundleLoader.FadeBox);
-
-                            fuckoff = true;
-                        }
-                    }
-                }
-
-                if (PluginConfig.legacyUi == false)
-                {
-                    if (AssetBundleLoader.hud != null)
-                    {
-                        AssetBundleLoader.hud.transform.position = Camera.main.transform.position + Vector3.forward * 0.6f;
                     }
                 }
 

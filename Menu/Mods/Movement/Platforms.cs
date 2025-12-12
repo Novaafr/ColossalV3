@@ -56,6 +56,9 @@ namespace Colossal.Mods
                 case 4:
                     PlatMaterial.color = new Color(0f, 0f, 1f, 0.5f);
                     break;
+                case 5:
+                    PlatMaterial.color = new Color(0, 0, 0, 0.5f);
+                    break;
             }
 
 

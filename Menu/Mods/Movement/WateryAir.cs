@@ -34,7 +34,8 @@ namespace Colossal.Mods {
                     return;
                 }
 
-                // Get mirrored versions for left and right hand
+                // Get mirrored
+                // s for left and right hand
                 string leftBind = CustomBinding.MirrorBind(bind, true);
                 string rightBind = CustomBinding.MirrorBind(bind, false);
 

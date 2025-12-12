@@ -29,7 +29,7 @@ namespace Colossal.Menu
             $"<color={Menu.MenuColour}>Submenu</color>\nMusic Player",
             $"<color={Menu.MenuColour}>Submenu</color>\nSettings",
             $"<color={Menu.MenuColour}>Submenu</color>\nInformation",
-            $"<color={Menu.MenuColour}>Submenu</color>\nMacro options",
+            $"<color={Menu.MenuColour}>Submenu</color>\nSoon",
             $"<color={Menu.MenuColour}>Passive</color>\nToggles noti",
             $"<color={Menu.MenuColour}>Passive</color>\nToggles overlay",
             $"<color={Menu.MenuColour}>Passive</color>\nToggles tooltips",
@@ -47,6 +47,7 @@ namespace Colossal.Menu
             $"<color={Menu.MenuColour}>R Joystick > L Trigger & R Trigger</color>\nScale the world",
             $"<color={Menu.MenuColour}>Passive</color>\nConstantly spins your ss rig",
             $"<color={Menu.MenuColour}>W & A & S & D</color>\nFly when not in vr",
+            $"<color={Menu.MenuColour}>L Joystick & R Joystick</color>\nFly with your joystick movements",
         };
         public static string[] Movement2tips = new string[]
         {
@@ -62,7 +63,7 @@ namespace Colossal.Menu
             $"<color={Menu.MenuColour}>Passive</color>\nChanges your movement like how different hz would",
             $"<color={Menu.MenuColour}>Custom</color>\nThrow yourself by swinging your arms",
             $"<color={Menu.MenuColour}>Submenu</color>\nStrafe Options",
-            $"<color={Menu.MenuColour}>L Joystick & R Joystick</color>\nFly with your joystick movements",
+            $"<color={Menu.MenuColour}>Custom</color>\nLets you pull better",
         };
         public static string[] Speedtips = new string[]
         {
@@ -151,19 +152,14 @@ namespace Colossal.Menu
         {
             $"<color={Menu.MenuColour}>Passive</color>\nBreaks nametag mods",
             $"<color={Menu.MenuColour}>R Trigger (Other Player: Fist)</color>\nGives selected players platforms",
-            $"<color={Menu.MenuColour}>Passive</color>\nLags everyone",
             $"<color={Menu.MenuColour}>SubMenu</color>\nDifferent cosmetic options",
             $"<color={Menu.MenuColour}>Passive</color>\nFreezes everyone (takes a while)",
-            $"<color={Menu.MenuColour}>Passive</color>\nForces guardian",
-            $"<color={Menu.MenuColour}>Passive</color>\nTeleports you to attempt to get guardian",
-            $"<color={Menu.MenuColour}>Passive</color>\nGrabs everyone",
+            $"<color={Menu.MenuColour}>Custom</color>\nA gun that launches giant snowballs",
+            $"<color={Menu.MenuColour}>Passive</color>\nGives quest badge 99999",
         };
         public static string[] Exploit2tips = new string[]
         {
-            $"<color={Menu.MenuColour}>Passive</color>\nKills everyones game",
-            $"<color={Menu.MenuColour}>Custom</color>\nA gun that launches giant snowballs",
-            $"<color={Menu.MenuColour}>Passive</color>\nGives quest badge 99999",
-            $"<color={Menu.MenuColour}>Passive</color>\nAttempts to kick everyone",
+            $"<color={Menu.MenuColour}>Passive</color>\nMakes you stop throwing snowballs",
         };
 
         public static string[] Computertips = new string[]

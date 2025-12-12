@@ -33,28 +33,28 @@ namespace Colossal.Mods
 
                 if (ControlsV2.GetControl(bind))
                 {
-                    if (ghost == null)
-                        ghost = GhostManager.SpawnGhost();
+                    //if (ghost == null)
+                        //ghost = GhostManager.SpawnGhost();
 
                     if (VRRig.LocalRig.enabled)
                         VRRig.LocalRig.enabled = false;
 
-                    ghost.GetComponent<VRRig>().mainSkin.material.color = GhostManager.ghostColor;
-                    ghost.GetComponent<VRRig>().mainSkin.material.shader = Shader.Find("GUI/Text Shader");
+                    //ghost.GetComponent<VRRig>().mainSkin.material.color = GhostManager.ghostColor;
+                    //ghost.GetComponent<VRRig>().mainSkin.material.shader = Shader.Find("GUI/Text Shader");
                 }
                 else
                 {
                     if (!VRRig.LocalRig.enabled)
                         VRRig.LocalRig.enabled = true;
 
-                    if (ghost != null)
-                        GhostManager.DestroyGhost(ghost);
+                    //if (ghost != null)
+                        //GhostManager.DestroyGhost(ghost);
                 }
             }
             else
             {
-                if (ghost != null)
-                    GhostManager.DestroyGhost(ghost);
+                //if (ghost != null)
+                    //GhostManager.DestroyGhost(ghost);
 
                 if (!VRRig.LocalRig.enabled)
                     VRRig.LocalRig.enabled = true;

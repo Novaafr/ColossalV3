@@ -27,14 +27,14 @@ namespace Colossal.Mods
                 // Alternative button press (if needed)
                 if (ControllerInputPoller.instance.leftControllerSecondaryButton)
                 {
-                    GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.velocity = new Vector3(0f, 0.01f, 0f);
+                    GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity = new Vector3(0f, 0.01f, 0f);
                 }
 
                 // FIXED: Use correct input checking method
                 if (ControlsV2.GetControl(bind))
                 {
                     GorillaLocomotion.GTPlayer.Instance.transform.position += GorillaLocomotion.GTPlayer.Instance.RightHand.controllerTransform.forward * 0.45f;
-                    GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
+                    GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity = Vector3.zero;
                     return;
                 }
             }

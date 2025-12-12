@@ -27,24 +27,24 @@ namespace Colossal.Mods
 
                 if (ControlsV2.GetControl(bind))
                 {
-                    if(ghost == null) 
-                        ghost = GhostManager.SpawnGhost();
+                    //if(ghost == null) 
+                        //ghost = GhostManager.SpawnGhost();
 
                     if (VRRig.LocalRig.enabled)
                         VRRig.LocalRig.enabled = false;
 
-                    if(ghost != null)
-                    {
-                        ghost.GetComponent<VRRig>().mainSkin.material.color = GhostManager.ghostColor;
-                        ghost.GetComponent<VRRig>().mainSkin.material.shader = Shader.Find("GUI/Text Shader");
-                    }
+                    //if(ghost != null)
+                    //{
+                    //    ghost.GetComponent<VRRig>().mainSkin.material.color = GhostManager.ghostColor;
+                    //    ghost.GetComponent<VRRig>().mainSkin.material.shader = Shader.Find("GUI/Text Shader");
+                    //}
 
                     VRRig.LocalRig.transform.position = new Vector3(VRRig.LocalRig.transform.position.x, -6969f, VRRig.LocalRig.transform.position.z);
                 }
                 else
                 {
-                    if (ghost != null)
-                        GhostManager.DestroyGhost(ghost);
+                    //if (ghost != null)
+                        //GhostManager.DestroyGhost(ghost);
 
                     if (!VRRig.LocalRig.enabled)
                         VRRig.LocalRig.enabled = true;
@@ -52,8 +52,8 @@ namespace Colossal.Mods
             }
             else
             {
-                if(ghost != null)
-                    GhostManager.DestroyGhost(ghost);
+                //if(ghost != null)
+                    //GhostManager.DestroyGhost(ghost);
 
                 if (!VRRig.LocalRig.enabled)
                     VRRig.LocalRig.enabled = true;

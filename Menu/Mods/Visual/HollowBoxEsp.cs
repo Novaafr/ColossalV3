@@ -48,6 +48,9 @@ namespace Colossal.Mods
                     case 4:
                         espColor = new Color(0f, 0f, 1f, 0.4f);
                         break;
+                    case 5:
+                        espColor = new Color(0f, 0f, 0f, 0.4f);
+                        break;
                     default:
                         espColor = new Color(0.6f, 0f, 0.8f, 0.4f);
                         break;

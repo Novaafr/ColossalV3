@@ -96,6 +96,9 @@ namespace Colossal.Mods
                     case 4:
                         color = new Color(0f, 0f, 1f, GetHitBoxOpacity(PluginConfig.HitBoxesOpacity));
                         break;
+                    case 5:
+                        color = new Color(0f, 0f, 0f, GetHitBoxOpacity(PluginConfig.HitBoxesOpacity));
+                        break;
                 }
 
 

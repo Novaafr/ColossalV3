@@ -29,6 +29,7 @@ namespace Colossal.Mods
                     case 2: beamColour = new Color(1f, 1f, 0f, 0.5f); break;    // Yellow
                     case 3: beamColour = new Color(0f, 1f, 0f, 0.5f); break;    // Green
                     case 4: beamColour = new Color(0f, 0f, 1f, 0.5f); break;    // Blue
+                    case 5: beamColour = new Color(0f, 0f, 0f, 0.5f); break;    // Black
                 }
 
                 // Initialize pointer if not present

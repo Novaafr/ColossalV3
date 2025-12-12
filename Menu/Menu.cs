@@ -81,7 +81,7 @@ namespace Colossal.Menu
         public static MenuOption[] Macro;
         public static MenuOption[] MusicPlayer;
         public static MenuOption[] Dev;
-        private static bool devMenuAdded = false;
+        public static bool devMenuAdded = false;
 
         public static MenuOption[] Speed;
         public static MenuOption[] Strafe;
@@ -246,6 +246,9 @@ namespace Colossal.Menu
             MusicPlayer = SafeLoadMenu("Menu_MusicPlayer", "21"); loadingNumber += 1; UpdateLoadingText(); yield return null;
 
             Macro = SafeLoadMenu("Menu_Macro", "22"); loadingNumber += 1; UpdateLoadingText(); yield return null;
+
+            // Test
+            //Dev = SafeLoadMenu("Menu_Macro", "23"); loadingNumber += 1; UpdateLoadingText(); yield return null;
 
             // Final update
             loadingNumber = 22;
@@ -824,6 +827,7 @@ namespace Colossal.Menu
 				Movement[7].AssociatedBool = PluginConfig.longarms;
 				Movement[8].AssociatedBool = PluginConfig.SpinBot;
 				Movement[9].stringsliderind = PluginConfig.WASDFly;
+				Movement[10].AssociatedBool = PluginConfig.joystickfly;
 
 				Movement2[0].stringsliderind = PluginConfig.Timer;
 				Movement2[1].stringsliderind = PluginConfig.floatymonkey;
@@ -835,7 +839,7 @@ namespace Colossal.Menu
 				Movement2[7].AssociatedBool = PluginConfig.forcetagfreeze;
 				Movement2[9].stringsliderind = PluginConfig.hzhands;
 				Movement2[10].AssociatedBool = PluginConfig.Throw;
-				Movement2[12].AssociatedBool = PluginConfig.joystickfly;
+				Movement2[12].AssociatedBool = PluginConfig.pullmod;
 				Strafe[0].stringsliderind = PluginConfig.strafe;
 				Strafe[1].stringsliderind = PluginConfig.strafespeed;
 				Strafe[2].stringsliderind = PluginConfig.strafejumpamount;
@@ -848,6 +852,7 @@ namespace Colossal.Menu
 				Visual[7].AssociatedBool = PluginConfig.fullbright;
 				Visual[8].stringsliderind = PluginConfig.skycolour;
 				Visual[9].AssociatedBool = PluginConfig.whyiseveryonelookingatme;
+				Visual[10].stringsliderind = PluginConfig.firstperson;
 
 				Visual2[0].AssociatedBool = PluginConfig.SplashMonkey;
 				Visual2[1].AssociatedBool = PluginConfig.NoLeaves;
@@ -895,15 +900,11 @@ namespace Colossal.Menu
 
 				Exploits[0].AssociatedBool = PluginConfig.breaknametags;
 				Exploits[1].AssociatedBool = PluginConfig.SSPlatforms;
-				Exploits[2].AssociatedBool = PluginConfig.audiocrash;
-				Exploits[4].AssociatedBool = PluginConfig.freezeall;
-				Exploits[6].AssociatedBool = PluginConfig.alwaysguardian;
-				Exploits[7].AssociatedBool = PluginConfig.assendall;
+				Exploits[3].AssociatedBool = PluginConfig.freezeall;
+                Exploits[4].AssociatedBool = PluginConfig.snowballgun;
 
 
-				Exploits2[0].AssociatedBool = PluginConfig.appquitall;
-				Exploits2[1].AssociatedBool = PluginConfig.snowballgun;
-				Exploits2[3].AssociatedBool = PluginConfig.kickall;
+                Exploits2[0].AssociatedBool = PluginConfig.disablesnowballthrow;
 				//Exploits2[10].AssociatedBool = PluginConfig.spazallropes;
 
 				CosmeticsSpoofer[0].AssociatedBool = PluginConfig.spazallcosmetics;
@@ -1032,7 +1033,6 @@ namespace Colossal.Menu
 
                             activePanel = newPanelElement; // Set the new panel as active (optional, depending on your needs)
                         }
-
 
                         MenuState = newMenuState;
                         CurrentViewingMenu = GUICreator.GetMenuOptions(newMenuState);
@@ -1413,6 +1413,9 @@ namespace Colossal.Menu
                         case 4:
                             MenuColour = "blue";
                             break;
+                        case 5:
+                            MenuColour = "black";
+                            break;
                     }
                     switch (PluginConfig.MenuPosition)
                     {
@@ -1431,36 +1434,54 @@ namespace Colossal.Menu
                     }
 
                     Camera specificCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+                    int layerA = 25;
+                    int layerB = 16;
+                    int maskA = 1 << layerA;
+                    int maskB = 1 << layerB; 
                     switch (PluginConfig.AntiScreenShare)
                     {
                         case 0:
-                            specificCamera.cullingMask &= ~((1 << 25) | (1 << 16));
-                            break;
-                        case 1:
-                            specificCamera.cullingMask |= 1 << 25;
+                            specificCamera.cullingMask &= ~(maskA | maskB); 
+
                             if (MenuHub != null && Overlay.OverlayHub != null && Overlay.OverlayHubRoom != null && Notifacations.NotiHub != null)
                             {
-                                MenuHub.layer = 25;
-                                Overlay.OverlayHub.layer = 25;
-                                Overlay.OverlayHubRoom.layer = 25;
-                                Notifacations.NotiHub.layer = 25;
+                                MenuHub.layer = 0;
+                                Overlay.OverlayHub.layer = 0;
+                                Overlay.OverlayHubRoom.layer = 0;
+                                Notifacations.NotiHub.layer = 0;
                             }
                             break;
-                        case 2:
-                            specificCamera.cullingMask |= 1 << 16;
+
+                        case 1:
+                            specificCamera.cullingMask |= maskA;   
+                            specificCamera.cullingMask &= ~maskB;  
                             if (MenuHub != null && Overlay.OverlayHub != null && Overlay.OverlayHubRoom != null && Notifacations.NotiHub != null)
                             {
-                                MenuHub.layer = 16;
-                                Overlay.OverlayHub.layer = 16;
-                                Overlay.OverlayHubRoom.layer = 16;
-                                Notifacations.NotiHub.layer = 16;
+                                MenuHub.layer = layerA;
+                                Overlay.OverlayHub.layer = layerA;
+                                Overlay.OverlayHubRoom.layer = layerA;
+                                Notifacations.NotiHub.layer = layerA;
+                            }
+                            break;
+
+                        case 2:
+                            specificCamera.cullingMask |= maskB;   
+                            specificCamera.cullingMask &= ~maskA;  
+                            if (MenuHub != null && Overlay.OverlayHub != null && Overlay.OverlayHubRoom != null && Notifacations.NotiHub != null)
+                            {
+                                MenuHub.layer = layerB;
+                                Overlay.OverlayHub.layer = layerB;
+                                Overlay.OverlayHubRoom.layer = layerB;
+                                Notifacations.NotiHub.layer = layerB;
                             }
                             break;
                     }
+
                 }
             }
-            catch
+            catch (Exception e)
             {
+                UnityEngine.Debug.Log("[DEBUG] Colossal : " + e.Message);
             }
         }
     }

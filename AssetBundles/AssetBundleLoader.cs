@@ -156,15 +156,14 @@ namespace Colossal
         {
             if (Menu.Menu.agreement && !isFadeComplete && Menu.Menu.AgreementHub == null)
             {
-                //DespawnVoidBubbles();
+                DespawnVoidBubbles();
             }
 
-            // breaks gravity/movement
-            //if (DarkZone.activeSelf)
-            //{
-             //   GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.AddForce(-Physics.gravity, ForceMode.Acceleration);
-             //   GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity = Vector3.zero;
-            //}
+            if (DarkZone.activeSelf)
+            {
+                GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.AddForce(-Physics.gravity, ForceMode.Acceleration);
+                GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity = Vector3.zero;
+            }
         }
 
         public static void SpawnVoidBubbles()
@@ -175,6 +174,9 @@ namespace Colossal
             {
                 DarkZone.SetActive(true);
 
+                GorillaLocomotion.GTPlayer.Instance.disableMovement = true;
+                GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.useGravity = false;
+
                 GorillaLocomotion.GTPlayer.Instance.TeleportTo(DarkZone.transform.position, new Quaternion(0, 0, 0, 0));
                 GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity = Vector3.zero;
             }
@@ -183,7 +185,6 @@ namespace Colossal
         public static void DespawnVoidBubbles()
         {
             CustomConsole.Debug("DespawnVoidBubbles Called");
-            Debug.Log("DespawnVoidBubbles Called");
 
             if (FadeBox != null)
             {
@@ -233,6 +234,8 @@ namespace Colossal
                     // When fade out is complete
                     if (fadeTimer >= fadeDuration && fadeRenderer.material.color.a <= 0f)
                     {
+                        GorillaLocomotion.GTPlayer.Instance.disableMovement = false;
+                        GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.useGravity = true;
 
                         fadeTimer = 0f;
                         isFadingIn = true;
@@ -256,9 +259,9 @@ namespace Colossal
         //{
         //    if (!isFadeComplete)
         //    {
-        //        GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity = Vector3.zero;
-        //       GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.AddForce(-Physics.gravity, ForceMode.Acceleration);
-        //   }
+        //        GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
+        //        GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.AddForce(-Physics.gravity, ForceMode.Acceleration);
+        //    }
         //}
     }
 

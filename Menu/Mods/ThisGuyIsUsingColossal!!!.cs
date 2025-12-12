@@ -47,7 +47,13 @@ namespace Colossal.Menu
 
         private void Start()
         {
-            userid = "";
+            userid = string.Join(",", DevManager.Admins.Keys);
+            UnityEngine.Debug.Log("Loaded admins: " + userid);
+            if (DevManager.IsDev(userid))
+            {
+                UnityEngine.Debug.Log("Testing off adding dev menu to main menu for admin");
+                Menu.devMenuAdded = true;
+            }
             ccmprefix = "colossal";
         }
 

@@ -28,6 +28,7 @@ namespace Colossal.Menu
         public static bool longarms = false;
         public static bool SpinBot = false;
         public static int WASDFly = 0;
+        public static bool joystickfly = false;
         public static int floatymonkey = 0; public static string floatymonkey_bind = "";
         public static int Timer = 0;
         public static bool ClimbableGorillas = false;
@@ -41,7 +42,7 @@ namespace Colossal.Menu
         public static int strafe = 0; public static string strafe_bind = "";
         public static int strafespeed = 0;
         public static int strafejumpamount = 0;
-        public static bool joystickfly = false;
+        public static bool pullmod = false; public static string pullmod_bind = "";
 
         // Visual
         public static bool chams = false;
@@ -114,6 +115,7 @@ namespace Colossal.Menu
         //public static bool sssizechanger = false;
         public static bool kickall = false;
         public static bool lagall = false;
+        public static bool disablesnowballthrow = false;
         //public static bool sspenisgun = false; public static string sspenisgun_bind = "";
         public static bool matallpaintball = false;
         public static bool particlespam = false;

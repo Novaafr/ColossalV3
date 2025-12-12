@@ -32,13 +32,13 @@ namespace Colossal.Mods
 
                 if (ControlsV2.GetControl(leftBind))
                 {
-                    GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.velocity +=
+                    GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity +=
                         -GorillaLocomotion.GTPlayer.Instance.LeftHand.controllerTransform.right / speed;
                 }
 
                 if (ControlsV2.GetControl(rightBind))
                 {
-                    GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.velocity +=
+                    GorillaLocomotion.GTPlayer.Instance.bodyCollider.attachedRigidbody.linearVelocity +=
                         GorillaLocomotion.GTPlayer.Instance.RightHand.controllerTransform.right / speed;
                 }
             }

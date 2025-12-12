@@ -94,6 +94,9 @@ namespace ColossalV2.Mods
                         case 4:
                             indicatorColour = new Color32(0, 0, 255, 80);
                             break;
+                        case 5:
+                            indicatorColour = new Color(0, 0, 0, 80);
+                            break;
                         default:
                             indicatorColour = new Color32(255, 255, 255, 255);
                             break;

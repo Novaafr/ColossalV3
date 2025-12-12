@@ -1,36 +1,37 @@
-﻿﻿using HarmonyLib;
-using UnityEngine;
-using BepInEx;
-using System.Reflection;
+﻿using BepInEx;
+using Colossal.Console;
+using Colossal.Menu;
+using Fusion;
+﻿using HarmonyLib;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Pathfinding;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System;
 using System.Linq;
-using UnityEngine.UI;
-using Colossal.Menu;
-using UnityEngine.InputSystem;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System.Collections;
-using Debug = UnityEngine.Debug;
-using System.Security.Cryptography;
-using Microsoft.Win32;
-using static Colossal.Patches.BepInPatcher;
-using System.Net.NetworkInformation;
-using System.Net.Http;
-using Pathfinding;
-using System.Text;
-using Unity.Mathematics;
-using static UnityEngine.Rendering.DebugUI;
 using System.Net;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using WebSocketSharp;
-using UnityEngine.Networking;
-using Colossal.Console;
+using System.Net.Http;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
-using Fusion;
-using System.ComponentModel;
+using System.Threading.Tasks;
+using Unity.Mathematics;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+using WebSocketSharp;
+using static Colossal.Patches.BepInPatcher;
+using static UnityEngine.Rendering.DebugUI;
+using Debug = UnityEngine.Debug;
 
 namespace Colossal.Patches
 {
@@ -48,6 +49,11 @@ namespace Colossal.Patches
     public class IIDKUserCount
     {
         public int users; // The number of users, e.g., 256
+    }
+
+    public class ColossalUserCount
+    {
+        public int count; // The number of users, e.g., 256
     }
     public static class JsonHelper
     {
@@ -74,6 +80,7 @@ namespace Colossal.Patches
         public static string GTCCodeInfo;
         private static HttpClient IIDKclient = new HttpClient();
         private static HttpClient GTCclient = new HttpClient();
+        private static HttpClient CCMClient = new HttpClient();
 
         public static bool ConsoleDisabled = false;
 
@@ -97,7 +104,9 @@ namespace Colossal.Patches
             instance = this;
             Debug.Log("Testing");
             _ = FetchUserCountAsync();
+            _ = DevManager.UpdateDevsAsync();
         }
+
 
         private IEnumerator Ping()
         {

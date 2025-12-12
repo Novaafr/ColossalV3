@@ -39,6 +39,9 @@ namespace Colossal.Mods
                     case 4:
                         lineMaterial.color = new Color(0f, 0f, 1f, 0.5f);
                         break;
+                    case 5:
+                        lineMaterial.color = new Color(0f, 0f, 0f, 0.5f);
+                        break;
                 }
 
                 if (PhotonNetwork.InRoom)

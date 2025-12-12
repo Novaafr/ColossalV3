@@ -50,16 +50,16 @@ namespace Colossal.Mods
                 switch (PluginConfig.nametagsize)
                 {
                     case 0: // Chest size
-                        size = new Vector3(0.1f, 0.1f, 0.1f);
+                        size = new Vector3(1, 1, 1);
                         break;
                     case 1: // Small
-                        size = new Vector3(0.3f, 0.3f, 0.3f);
+                        size = new Vector3(3f, 3, 3);
                         break;
                     case 2: // Medium
-                        size = new Vector3(0.5f, 0.5f, 0.5f);
+                        size = new Vector3(4f, 4, 4);
                         break;
                     case 3: // Large
-                        size = new Vector3(0.6f, 0.6f, 0.6f);
+                        size = new Vector3(5f, 5, 5);
                         break;
                 }
 
@@ -114,14 +114,16 @@ namespace Colossal.Mods
                                 Quaternion rotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
                                 nameTagText.transform.rotation = rotation;
 
-                                //Vector3 scale = size * Vector3.Distance(Camera.main.transform.position, vrrig.transform.position) / 10;
-                                //nameTagText.transform.localScale = new Vector3(Mathf.Max(scale.x, 4), Mathf.Max(scale.y, 4), Mathf.Max(scale.z, 4));
+                                float dist = Vector3.Distance(Camera.main.transform.position, vrrig.transform.position);
+                                float multiplier = Mathf.Clamp(dist / 10f, 0.5f, 3f);
+                                nameTagText.transform.localScale = size * multiplier;
                             }
                             else
                             {
                                 nameTagText.transform.rotation = vrrig.transform.rotation;
                                 nameTagText.transform.localScale = size;
                             }
+
 
                             if (PluginConfig.AlwaysVisible)
                             {
@@ -182,7 +184,6 @@ namespace Colossal.Mods
             clonedText1Object.name = "ClonedNameTag1";
             clonedText1Object.transform.SetParent(vrrig.playerText1.transform.parent, false);
             TextMeshPro clonedText1 = clonedText1Object.GetComponent<TextMeshPro>();
-            clonedText1.alignment = TextAlignmentOptions.Center;
 
             RectTransform rectTransform = clonedText1.GetComponent<RectTransform>();
             if (rectTransform != null)

@@ -385,7 +385,7 @@ namespace Colossal.Menu
                 case "Macro": return Menu.Macro;
                 case "MusicPlayer": return Menu.MusicPlayer;
                 case "ColourSettings": return Menu.ColourSettings;
-                case "Dev": return Menu.Dev;
+                //case "Dev": return Menu.Dev;
                 default: return Menu.MainMenu; // Default to MainMenu if unknown
             }
         }

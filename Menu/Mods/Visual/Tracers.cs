@@ -47,6 +47,7 @@ namespace Colossal.Mods
                 case 2: return new Color(1f, 1f, 0f, 0.4f);    // Yellow
                 case 3: return new Color(0f, 1f, 0f, 0.4f);    // Green
                 case 4: return new Color(0f, 0f, 1f, 0.4f);    // Blue
+                case 5: return new Color(0f, 0f, 0f, 0.4f);    // Black
                 default: return new Color(0.6f, 0f, 0.8f, 0.4f);  // Default Purple
             }
         }

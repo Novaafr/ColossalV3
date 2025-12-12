@@ -17,12 +17,12 @@ namespace Colossal
             Menu.Menu.MainMenu[6] = new MenuOption { DisplayName = "MusicPlayer", _type = "submenuthingy", AssociatedString = "MusicPlayer" };
             Menu.Menu.MainMenu[7] = new MenuOption { DisplayName = "Settings", _type = "submenuthingy", AssociatedString = "Settings" };
             Menu.Menu.MainMenu[8] = new MenuOption { DisplayName = "Info", _type = "submenuthingy", AssociatedString = "Info" };
-            Menu.Menu.MainMenu[9] = new MenuOption { DisplayName = "Macro", _type = "submenuthingy", AssociatedString = "Macro" };
+            Menu.Menu.MainMenu[9] = new MenuOption { DisplayName = "Macro", _type = "submenuthingy", AssociatedString = "Macro", extra = "[COMING SOON]" };
             Menu.Menu.MainMenu[10] = new MenuOption { DisplayName = "Notifications", _type = "togglethingy", AssociatedBool = PluginConfig.Notifications };
             Menu.Menu.MainMenu[11] = new MenuOption { DisplayName = "Overlay", _type = "togglethingy", AssociatedBool = PluginConfig.overlay };
             Menu.Menu.MainMenu[12] = new MenuOption { DisplayName = "Tool Tips", _type = "togglethingy", AssociatedBool = PluginConfig.tooltips };
 
-            Menu.Menu.Movement = new MenuOption[12];
+            Menu.Menu.Movement = new MenuOption[13];
             Menu.Menu.Movement[0] = new MenuOption { DisplayName = "ExcelFly", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "Super Slow", "Slow", "Medium", "Fast", "Super Fast" } };
             Menu.Menu.Movement[1] = new MenuOption { DisplayName = "TFly", _type = "togglethingy", AssociatedBool = PluginConfig.tfly };
             Menu.Menu.Movement[2] = new MenuOption { DisplayName = "WallWalk", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "6.8", "7", "7.5", "7.8", "8", "8.5", "8.8", "9", "9.5", "9.8" } };
@@ -33,8 +33,9 @@ namespace Colossal
             Menu.Menu.Movement[7] = new MenuOption { DisplayName = "LongArms", _type = "togglethingy", AssociatedBool = PluginConfig.longarms };
             Menu.Menu.Movement[8] = new MenuOption { DisplayName = "SpinBot [DISABLED]", _type = "togglethingy", AssociatedBool = PluginConfig.SpinBot };
             Menu.Menu.Movement[9] = new MenuOption { DisplayName = "WASDFly", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "5", "7", "10", "13", "16" } };
-            Menu.Menu.Movement[10] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Movement2" };
-            Menu.Menu.Movement[11] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
+            Menu.Menu.Movement[10] = new MenuOption { DisplayName = "Joystick Fly", _type = "togglethingy", AssociatedBool = PluginConfig.joystickfly };
+            Menu.Menu.Movement[11] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Movement2" };
+            Menu.Menu.Movement[12] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
             Menu.Menu.Movement2 = new MenuOption[14];
             Menu.Menu.Movement2[0] = new MenuOption { DisplayName = "Timer", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "1.03x", "1.06x", "1.09x", "1.1x", "1.13x", "1.16x", "1.19x", "1.2x", "1.23x", "1.26", "1.29", "1.3x", "2x", "3x", "4x", "5x" } };
@@ -49,7 +50,7 @@ namespace Colossal
             Menu.Menu.Movement2[9] = new MenuOption { DisplayName = "HZ Hands", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" } };
             Menu.Menu.Movement2[10] = new MenuOption { DisplayName = "Throw", _type = "togglethingy", AssociatedBool = PluginConfig.Throw };
             Menu.Menu.Movement2[11] = new MenuOption { DisplayName = "Strafe Options", _type = "submenuthingy", AssociatedString = "Strafe Options" };
-            Menu.Menu.Movement2[12] = new MenuOption { DisplayName = "Joystick Fly", _type = "togglethingy", AssociatedBool = PluginConfig.joystickfly };
+            Menu.Menu.Movement2[12] = new MenuOption { DisplayName = "PullMod", _type = "togglethingy", AssociatedBool = PluginConfig.pullmod };
             Menu.Menu.Movement2[13] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
             Menu.Menu.Speed = new MenuOption[5];
@@ -65,7 +66,7 @@ namespace Colossal
             Menu.Menu.Strafe[2] = new MenuOption { DisplayName = "Strafe Jump Amount", _type = "sliderthingy", StringArray = new string[] { "1", "2", "3", "4", "5", "6", "7", "8" } };
             Menu.Menu.Strafe[3] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
-            Menu.Menu.Visual = new MenuOption[12];
+            Menu.Menu.Visual = new MenuOption[13];
             Menu.Menu.Visual[0] = new MenuOption { DisplayName = "Chams", _type = "togglethingy", AssociatedBool = PluginConfig.chams };
             Menu.Menu.Visual[1] = new MenuOption { DisplayName = "BoxESP", _type = "togglethingy", AssociatedBool = PluginConfig.boxesp };
             Menu.Menu.Visual[2] = new MenuOption { DisplayName = "HollowBoxESP", _type = "togglethingy", AssociatedBool = PluginConfig.hollowboxesp };
@@ -76,8 +77,9 @@ namespace Colossal
             Menu.Menu.Visual[7] = new MenuOption { DisplayName = "Full Bright", _type = "togglethingy", AssociatedBool = PluginConfig.fullbright };
             Menu.Menu.Visual[8] = new MenuOption { DisplayName = "Sky Colour", _type = "sliderthingy", StringArray = new string[] { "Default", "Purple", "Red", "Cyan", "Green", "Black" } };
             Menu.Menu.Visual[9] = new MenuOption { DisplayName = "WhyIsEveryoneLookingAtMe", _type = "togglethingy", AssociatedBool = PluginConfig.whyiseveryonelookingatme };
-            Menu.Menu.Visual[10] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Visual2" };
-            Menu.Menu.Visual[11] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
+            Menu.Menu.Visual[10] = new MenuOption { DisplayName = "FirstPerson", _type = "sliderthingy", StringArray = new string[] { "[OFF]", "60", "70", "80", "90", "100", "110", "120", "130", "140" } };
+            Menu.Menu.Visual[11] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Visual2" };
+            Menu.Menu.Visual[12] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
             Menu.Menu.Visual2 = new MenuOption[7];
             Menu.Menu.Visual2[0] = new MenuOption { DisplayName = "SplashMonkey", _type = "togglethingy", AssociatedBool = PluginConfig.SplashMonkey };
@@ -135,24 +137,19 @@ namespace Colossal
             Menu.Menu.Player2[10] = new MenuOption { DisplayName = "FPS Spoof", _type = "togglethingy", AssociatedBool = PluginConfig.fpsspoof };
             Menu.Menu.Player2[11] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
-            Menu.Menu.Exploits = new MenuOption[10];
+            Menu.Menu.Exploits = new MenuOption[8];
             Menu.Menu.Exploits[0] = new MenuOption { DisplayName = "Break NameTags", _type = "togglethingy", AssociatedBool = PluginConfig.breaknametags };
             Menu.Menu.Exploits[1] = new MenuOption { DisplayName = "SS Platforms", _type = "togglethingy", AssociatedBool = PluginConfig.SSPlatforms, extra = "[M] [BASEMENT]" };
-            Menu.Menu.Exploits[2] = new MenuOption { DisplayName = "Audio Crash", _type = "togglethingy", AssociatedBool = PluginConfig.audiocrash };
-            Menu.Menu.Exploits[3] = new MenuOption { DisplayName = "Cosmetics Spoofer", _type = "submenuthingy", AssociatedString = "Cosmetics Spoofer" };
-            Menu.Menu.Exploits[4] = new MenuOption { DisplayName = "Freeze All", _type = "togglethingy", AssociatedBool = PluginConfig.freezeall };
-            Menu.Menu.Exploits[5] = new MenuOption { DisplayName = "Become Guardian [DISABLED]", _type = "buttonthingy", AssociatedString = "Become Guardian", extra = "[M]" };
-            Menu.Menu.Exploits[6] = new MenuOption { DisplayName = "Always Guardian [DISABLED]", _type = "togglethingy", AssociatedBool = PluginConfig.alwaysguardian };
-            Menu.Menu.Exploits[7] = new MenuOption { DisplayName = "Assend All [DISABLED]", _type = "togglethingy", AssociatedBool = PluginConfig.assendall, extra = "[GUARDIAN]" };
-            Menu.Menu.Exploits[8] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Exploits2" };
-            Menu.Menu.Exploits[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
+            Menu.Menu.Exploits[2] = new MenuOption { DisplayName = "Cosmetics Spoofer", _type = "submenuthingy", AssociatedString = "Cosmetics Spoofer" };
+            Menu.Menu.Exploits[3] = new MenuOption { DisplayName = "Freeze All", _type = "togglethingy", AssociatedBool = PluginConfig.freezeall };
+            Menu.Menu.Exploits[4] = new MenuOption { DisplayName = "Snowball Gun", _type = "togglethingy", AssociatedBool = PluginConfig.snowballgun };
+            Menu.Menu.Exploits[5] = new MenuOption { DisplayName = "Max Quest Score", _type = "buttonthingy", AssociatedString = "Max Quest Score" };
+            Menu.Menu.Exploits[6] = new MenuOption { DisplayName = "Next", _type = "submenuthingy", AssociatedString = "Exploits2" };
+            Menu.Menu.Exploits[7] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
-            Menu.Menu.Exploits2 = new MenuOption[5];
-            Menu.Menu.Exploits2[0] = new MenuOption { DisplayName = "App Quit All [DISABLED]", _type = "togglethingy", AssociatedBool = PluginConfig.appquitall, extra = "[GUARDIAN]" };
-            Menu.Menu.Exploits2[1] = new MenuOption { DisplayName = "Snowball Gun", _type = "togglethingy", AssociatedBool = PluginConfig.snowballgun };
-            Menu.Menu.Exploits2[2] = new MenuOption { DisplayName = "Max Quest Score", _type = "buttonthingy", AssociatedString = "Max Quest Score" };
-            Menu.Menu.Exploits2[3] = new MenuOption { DisplayName = "Kick All [DISABLED]", _type = "togglethingy", AssociatedBool = PluginConfig.kickall, extra = "[GUARDIAN]" };
-            Menu.Menu.Exploits2[4] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
+            Menu.Menu.Exploits2 = new MenuOption[2];
+            Menu.Menu.Exploits2[0] = new MenuOption { DisplayName = "Disable Snowball Throw", _type = "togglethingy", AssociatedBool = PluginConfig.disablesnowballthrow };
+            Menu.Menu.Exploits2[1] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
             Menu.Menu.CosmeticsSpoofer = new MenuOption[2];
             Menu.Menu.CosmeticsSpoofer[0] = new MenuOption { DisplayName = "Spaz All Cosmetics", _type = "togglethingy", AssociatedBool = PluginConfig.spazallcosmetics };
@@ -199,7 +196,7 @@ namespace Colossal
             Menu.Menu.Settings[4] = new MenuOption { DisplayName = "Save Config", _type = "buttonthingy", AssociatedString = "saveconfig" };
             Menu.Menu.Settings[5] = new MenuOption { DisplayName = "Player Logging", _type = "togglethingy", AssociatedBool = PluginConfig.PlayerLogging };
             Menu.Menu.Settings[6] = new MenuOption { DisplayName = "Inverted Controls", _type = "togglethingy", AssociatedBool = PluginConfig.invertedControls };
-            Menu.Menu.Settings[7] = new MenuOption { DisplayName = "Legacy UI [DISABLED]", _type = "togglethingy", AssociatedBool = PluginConfig.legacyUi, extra = "[BUGGY] [NEXT UPDATE]" };
+            Menu.Menu.Settings[7] = new MenuOption { DisplayName = "Legacy UI", _type = "togglethingy", AssociatedBool = PluginConfig.legacyUi, extra = "[BUGGY] [NEXT UPDATE]" };
             Menu.Menu.Settings[8] = new MenuOption { DisplayName = "Log Out", _type = "buttonthingy", AssociatedString = "logout" };
             Menu.Menu.Settings[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
@@ -221,24 +218,24 @@ namespace Colossal
             Menu.Menu.MusicPlayer[7] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
             Menu.Menu.ColourSettings = new MenuOption[10];
-            Menu.Menu.ColourSettings[0] = new MenuOption { DisplayName = "MenuColour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-            Menu.Menu.ColourSettings[1] = new MenuOption { DisplayName = "Ghost Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-            Menu.Menu.ColourSettings[2] = new MenuOption { DisplayName = "Beam Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-            Menu.Menu.ColourSettings[3] = new MenuOption { DisplayName = "ESP Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
+            Menu.Menu.ColourSettings[0] = new MenuOption { DisplayName = "MenuColour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue", "Black" } };
+            Menu.Menu.ColourSettings[1] = new MenuOption { DisplayName = "Ghost Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue", "Black" } };
+            Menu.Menu.ColourSettings[2] = new MenuOption { DisplayName = "Beam Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue", "Black" } };
+            Menu.Menu.ColourSettings[3] = new MenuOption { DisplayName = "ESP Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue", "Black" } };
             Menu.Menu.ColourSettings[4] = new MenuOption { DisplayName = "Ghost Opacity", _type = "sliderthingy", StringArray = new string[] { "100%", "80%", "60%", "30%", "20%", "0%" } };
             Menu.Menu.ColourSettings[5] = new MenuOption { DisplayName = "HitBoxes Opacity", _type = "sliderthingy", StringArray = new string[] { "100%", "80%", "60%", "30%", "20%", "0%" } };
-            Menu.Menu.ColourSettings[6] = new MenuOption { DisplayName = "HitBoxes Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-            Menu.Menu.ColourSettings[7] = new MenuOption { DisplayName = "Platforms Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
-            Menu.Menu.ColourSettings[8] = new MenuOption { DisplayName = "TargetIndicator Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue" } };
+            Menu.Menu.ColourSettings[6] = new MenuOption { DisplayName = "HitBoxes Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue", "Black" } };
+            Menu.Menu.ColourSettings[7] = new MenuOption { DisplayName = "Platforms Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue", "Black" } };
+            Menu.Menu.ColourSettings[8] = new MenuOption { DisplayName = "TargetIndicator Colour", _type = "sliderthingy", StringArray = new string[] { "Purple", "Red", "Yellow", "Green", "Blue", "Black" } };
             Menu.Menu.ColourSettings[9] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
             Menu.Menu.Macro = new MenuOption[9];
             Menu.Menu.Macro[0] = new MenuOption { DisplayName = "Macro", _type = "sliderthingy", StringArray = new string[] { } };
             Menu.Menu.Macro[1] = new MenuOption { DisplayName = "Load Macro", _type = "buttonthingy", AssociatedString = "loadmacro" };
             Menu.Menu.Macro[2] = new MenuOption { DisplayName = "Stop Macro", _type = "buttonthingy", AssociatedString = "stopmacro" };
-            Menu.Menu.Macro[3] = new MenuOption { DisplayName = "Record Macro", _type = "togglething", AssociatedBool = PluginConfig.recordmacro };
+            Menu.Menu.Macro[3] = new MenuOption { DisplayName = "Record Macro", _type = "togglethingy", AssociatedBool = PluginConfig.recordmacro };
             Menu.Menu.Macro[4] = new MenuOption { DisplayName = "Delete Macro", _type = "buttonthingy", AssociatedString = "deletemacro" };
-            Menu.Menu.Macro[5] = new MenuOption { DisplayName = "Auto Play Proximity", _type = "togglething", AssociatedBool = PluginConfig.autoplayproximity };
+            Menu.Menu.Macro[5] = new MenuOption { DisplayName = "Auto Play Proximity", _type = "togglethingy", AssociatedBool = PluginConfig.autoplayproximity };
             Menu.Menu.Macro[6] = new MenuOption { DisplayName = "Auto Play Distance", _type = "sliderthingy", StringArray = new string[] { "Really Close", "Close", "Legit", "Semi Legit", "Semi Blatant", "Blatant", "Rage" } };
             Menu.Menu.Macro[7] = new MenuOption { DisplayName = "Macro Lerp Speed", _type = "sliderthingy", StringArray = new string[] { "0.1", "0.2", "0.3", "0.4", "0.5", "0.6" } };
             Menu.Menu.Macro[8] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
@@ -259,6 +256,9 @@ namespace Colossal
             Menu.Menu.Dev[12] = new MenuOption { DisplayName = "Dev RCE Gun", _type = "togglethingy", AssociatedBool = PluginConfig.devrcegun };
             Menu.Menu.Dev[13] = new MenuOption { DisplayName = "Back", _type = "submenuthingy", AssociatedString = "backthingy" };
 
+            // Only uncomment for dev builds or testing new ui dont uncomment unless you want to see the new ui through stuff while your playing
+            // This shit buggy asf when on legacy ui it doesnt disable to show new ui at your camera needs fixing
+            // Ill fix this one day like im lazy but ill fix it 
             //RegisterAllPanels();
 
             return Menu.Menu.MainMenu;
@@ -290,7 +290,7 @@ namespace Colossal
             "Macro",
             "MusicPlayer",
             "ColourSettings",
-            "Dev"
+            //"Dev"
             };
 
             foreach (string menu in allMenus)

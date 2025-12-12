@@ -34,7 +34,7 @@ namespace Colossal.Console
 
             if (!PhotonNetwork.InRoom || GorillaGameManager.instance == null) return;
 
-            if (Threadthingys.GTCCodeInfo.IsNullOrWhiteSpace() && Threadthingys.GTCCodeInfo.Contains(PhotonNetwork.CurrentRoom.Name) && GorillaComputer.instance.currentGameMode.ToString().ToLower().Contains("comp")) return;
+            if (GorillaComputer.instance.currentGameMode.ToString().ToLower().Contains("comp")) return;
 
             if (data.Code == 68)
             {
